@@ -2,8 +2,8 @@ package sample;
 
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.RectangleBuilder;
+import javafx.scene.shape.Circle;
+import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
@@ -11,7 +11,7 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 
 
-public class Square {
+public class RoundThing {
     //JavaFX UI for square
     /**
      * 1 define body 2 create body 3 create shape 4 create fixture 5 attach
@@ -20,20 +20,18 @@ public class Square {
     public Node node;
     private float posX;
     private float posY;
-    private float sWidth;
-    private float sHeight;
+    private float sRadius;
     private static Color color;
 //    private BodyType bodyType;
 
-    private static Rectangle rc;
+    private static Circle circle;
 //    private float angle;
 //    private BodyDef bd;
 
-    public Square(float posX, float posY, float sWidth, float sHeight, Color color) {
+    public RoundThing(float posX, float posY, float sRadius, Color color) {
         this.posX = posX;
         this.posY = posY;
-        this.sWidth = sWidth;
-        this.sHeight = sHeight;
+        this.sRadius = sRadius;
         this.color = color;
 //        this.bodyType = bodyType;
         node = create();
@@ -41,12 +39,11 @@ public class Square {
 
     public Node create() {
         //UI for square in JavaFX
-        rc = new Rectangle();
-        rc.setLayoutX(Main.jBoxToFxPosX(posX));
-        rc.setLayoutY(Main.jBoxToFxPosY(posY));
-        rc.setWidth(sWidth);
-        rc.setHeight(sHeight);
-        rc.setFill(color);
+        circle = new Circle();
+        circle.setLayoutX(Main.jBoxToFxPosX(posX));
+        circle.setLayoutY(Main.jBoxToFxPosY(posY));
+        circle.setRadius(sRadius);
+        circle.setFill(color);
 
 
         //Create an JBox2D body definition for square.
@@ -54,8 +51,9 @@ public class Square {
         bd.type = BodyType.STATIC;
         bd.position.set(posX, posY); //do i have to convert these??
 
-        PolygonShape ps = new PolygonShape();
-        ps.setAsBox(Main.jBoxtoPixelWidth(sWidth/80),Main.jBoxtoPixelHeight(sHeight/80)); //wrong!! we need to convert to Jbox equiualent
+        CircleShape ps = new CircleShape();
+        ps.m_radius = sRadius;
+        //ps.setAsBox(Main.jBoxtoPixelWidth(sRadius /80),Main.jBoxtoPixelHeight(sHeight/80)); //wrong!! we need to convert to Jbox equiualent
 
         //fixture for polygon, in this case square
         FixtureDef fd = new FixtureDef();
@@ -66,7 +64,7 @@ public class Square {
 
         Body body = Main.world.createBody(bd);
         body.createFixture(fd);
-        rc.setUserData(body);
-        return rc;
+        circle.setUserData(body);
+        return circle;
     }
 }

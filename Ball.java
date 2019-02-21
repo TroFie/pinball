@@ -1,9 +1,11 @@
 package sample;
 
+import com.sun.javafx.geom.Vec2d;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import org.jbox2d.collision.shapes.CircleShape;
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
@@ -28,6 +30,7 @@ public class Ball {
      * bodies) are used for falling balls
      */
     private BodyType bodyType;
+    private Body body;
     //Gradient effects for balls
     private Color color;
 
@@ -47,7 +50,7 @@ public class Ball {
     }
 
     /**
-     * This method creates a ball by using Circle object from JavaFX and
+     * This method creates a ball by using RoundThing object from JavaFX and
      * CircleShape from JBox2D
      */
     private Node create() {
@@ -76,18 +79,24 @@ public class Ball {
         // Create a fixture for ball
         FixtureDef fd = new FixtureDef();
         fd.shape = cs;
-        fd.density = 0.9f;
-        fd.friction = 0.3f;
-        fd.restitution = 0.7f;
+        fd.density = 0.0f;
+        fd.friction = 0.0f;
+        fd.restitution = 1.0f;
+
 
         /**
          * Virtual invisible JBox2D body of ball. Bodies have velocity and
          * position. Forces, torques, and impulses can be applied to these
          * bodies.
          */
-        Body body = Main.world.createBody(bd);
+
+        body = Main.world.createBody(bd);
         body.createFixture(fd);
         ball.setUserData(body);
         return ball;
+    }
+
+    public void addForce(Vec2 force) {
+        body.applyForce(force, body.getWorldCenter());
     }
 }

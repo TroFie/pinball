@@ -9,6 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -20,7 +22,7 @@ import org.jbox2d.dynamics.World;
 
 public class Main extends Application {
 
-    public final static World world = new World(new Vec2(0.0f, -9.81f), true);
+    public final static World world = new World(new Vec2(0.0f, -0.0f), true);
     private static final float WIDTH = 800;
     private static final float HEIGHT = 600;
 
@@ -68,7 +70,16 @@ public class Main extends Application {
         final Scene scene = new Scene(root, WIDTH, HEIGHT, Color.BLACK);
         final Ball ball = new Ball(50, 50);
 
-        final Square square = new Square(50.0f, 20.0f, 30.0f, 30.0f, Color.AQUA);
+        final Square squareTop = new Square(0.0f, 100.0f, 10000.0f, 30.0f, Color.AQUA);
+        final Square squareRight = new Square(100.0f, 100.0f, 30.0f, 10000.0f, Color.AQUA);
+        final Square squareBottom = new Square(0.0f, 0.0f, 10000.0f, 30.0f, Color.AQUA);
+        final Square squareLeft = new Square(0.0f, 100.0f, 30.0f, 10000.0f, Color.AQUA);
+
+        final RoundThing roundThing1 = new RoundThing(50.0f, 50.0f, 10.0f, Color.GREEN);
+        final RoundThing roundThing2 = new RoundThing(25.0f, 60.0f, 10.0f, Color.GREEN);
+        final RoundThing roundThing3 = new RoundThing(70.0f, 40.0f, 10.0f, Color.GREEN);
+        final RoundThing roundThing4 = new RoundThing(50.0f, 70.0f, 10.0f, Color.GREEN);
+        final RoundThing roundThing5 = new RoundThing(69.0f, 69.0f, 10.0f, Color.GREEN);
 
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -92,10 +103,27 @@ public class Main extends Application {
         timeline.getKeyFrames().add(frame);
 
         root.getChildren().add(ball.node);
-        root.getChildren().add(square.node);
+        root.getChildren().add(squareTop.node);
+        root.getChildren().add(squareRight.node);
+        root.getChildren().add(squareBottom.node);
+        root.getChildren().add(squareLeft.node);
+        root.getChildren().add(roundThing1.node);
+        root.getChildren().add(roundThing2.node);
+        root.getChildren().add(roundThing3.node);
+        root.getChildren().add(roundThing4.node);
+        root.getChildren().add(roundThing5.node);
 
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.SPACE) {
+                ball.addForce(new Vec2(6000,6000));
+
+            }
+        });
+
 
         timeline.playFromStart();
     }
