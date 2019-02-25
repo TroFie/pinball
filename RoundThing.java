@@ -12,36 +12,27 @@ import org.jbox2d.dynamics.FixtureDef;
 
 
 public class RoundThing {
-    //JavaFX UI for square
-    /**
-     * 1 define body 2 create body 3 create shape 4 create fixture 5 attach
-     * shape to body
-     */
     public Node node;
     private float posX;
     private float posY;
     private float sRadius;
     private static Color color;
-//    private BodyType bodyType;
 
     private static Circle circle;
-//    private float angle;
-//    private BodyDef bd;
 
     public RoundThing(float posX, float posY, float sRadius, Color color) {
         this.posX = posX;
         this.posY = posY;
         this.sRadius = sRadius;
         this.color = color;
-//        this.bodyType = bodyType;
         node = create();
     }
 
     public Node create() {
         //UI for square in JavaFX
         circle = new Circle();
-        circle.setLayoutX(Main.jBoxToFxPosX(posX));
-        circle.setLayoutY(Main.jBoxToFxPosY(posY));
+        circle.setLayoutX(posX);
+        circle.setLayoutY(posY);
         circle.setRadius(sRadius);
         circle.setFill(color);
 
@@ -49,11 +40,10 @@ public class RoundThing {
         //Create an JBox2D body definition for square.
         BodyDef bd = new BodyDef();
         bd.type = BodyType.STATIC;
-        bd.position.set(posX, posY); //do i have to convert these??
+        bd.position.set(Main.meterToPixel(posX), Main.meterToPixel(-posY));
 
         CircleShape ps = new CircleShape();
-        ps.m_radius = sRadius;
-        //ps.setAsBox(Main.jBoxtoPixelWidth(sRadius /80),Main.jBoxtoPixelHeight(sHeight/80)); //wrong!! we need to convert to Jbox equiualent
+        ps.m_radius = Main.meterToPixel(sRadius);
 
         //fixture for polygon, in this case square
         FixtureDef fd = new FixtureDef();

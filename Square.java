@@ -42,8 +42,8 @@ public class Square {
     public Node create() {
         //UI for square in JavaFX
         rc = new Rectangle();
-        rc.setLayoutX(Main.jBoxToFxPosX(posX));
-        rc.setLayoutY(Main.jBoxToFxPosY(posY));
+        rc.setX(posX - sWidth);
+        rc.setY(posY - sHeight);
         rc.setWidth(sWidth);
         rc.setHeight(sHeight);
         rc.setFill(color);
@@ -52,10 +52,10 @@ public class Square {
         //Create an JBox2D body definition for square.
         BodyDef bd = new BodyDef();
         bd.type = BodyType.STATIC;
-        bd.position.set(posX, posY); //do i have to convert these??
+        bd.position.set(Main.pixelToMeter(posX), Main.pixelToMeter(-posY));
 
         PolygonShape ps = new PolygonShape();
-        ps.setAsBox(Main.jBoxtoPixelWidth(sWidth/80),Main.jBoxtoPixelHeight(sHeight/80)); //wrong!! we need to convert to Jbox equiualent
+        ps.setAsBox(Main.pixelToMeter(sWidth), Main.pixelToMeter(sHeight));
 
         //fixture for polygon, in this case square
         FixtureDef fd = new FixtureDef();

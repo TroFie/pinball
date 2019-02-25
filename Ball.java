@@ -1,6 +1,5 @@
 package sample;
 
-import com.sun.javafx.geom.Vec2d;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -14,7 +13,7 @@ import org.jbox2d.dynamics.FixtureDef;
 
 public class Ball {
 
-    public static final int BALL_SIZE = 10;
+    public static final int BALL_SIZE = 20;
     //JavaFX UI for ball
     public Node node;
     //X and Y position of the ball in JBox2D world
@@ -63,25 +62,25 @@ public class Ball {
          * Set ball position on JavaFX scene. We need to convert JBox2D
          * coordinates to JavaFX coordinates which are in pixels.
          */
-        ball.setLayoutX(Main.jBoxToFxPosX(posX));
-        ball.setLayoutY(Main.jBoxToFxPosY(posY));
+        ball.setLayoutX(posX);
+        ball.setLayoutY(posY);
 
         ball.setCache(true); //Cache this object for better performance
 
         //Create an JBox2D body defination for ball.
         BodyDef bd = new BodyDef();
         bd.type = bodyType;
-        bd.position.set(posX, posY);
+        bd.position.set(Main.pixelToMeter(posX), Main.pixelToMeter(-posY));
 
         CircleShape cs = new CircleShape();
-        cs.m_radius = radius * 0.1f;  //We need to convert radius to JBox2D equivalent
+        cs.m_radius = Main.pixelToMeter(radius);  //We need to convert radius to JBox2D equivalent
 
         // Create a fixture for ball
         FixtureDef fd = new FixtureDef();
         fd.shape = cs;
-        fd.density = 0.0f;
-        fd.friction = 0.0f;
-        fd.restitution = 1.0f;
+        fd.density = 0.2f;
+        fd.friction = 5f;
+        fd.restitution = 0.7f;
 
 
         /**
