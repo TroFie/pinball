@@ -40,10 +40,10 @@ public class RoundThing {
         //Create an JBox2D body definition for square.
         BodyDef bd = new BodyDef();
         bd.type = BodyType.STATIC;
-        bd.position.set(Main.meterToPixel(posX), Main.meterToPixel(-posY));
+        bd.position.set(Main.pixelToMeter(posX), Main.pixelToMeter(-posY));
 
         CircleShape ps = new CircleShape();
-        ps.m_radius = Main.meterToPixel(sRadius);
+        ps.m_radius = Main.pixelToMeter(sRadius);
 
         //fixture for polygon, in this case square
         FixtureDef fd = new FixtureDef();
