@@ -24,9 +24,9 @@ import org.jbox2d.dynamics.World;
 public class Main extends Application {
 
     public static final float PPM = 32.0f;
-    public final static World world = new World(new Vec2(0.0f, -9.81f), true);
-    private static final float WIDTH = 400;
-    private static final float HEIGHT = 600;
+    public final static World world = new World(new Vec2(0.0f, -9.81f));
+    private static final float WIDTH = 600;
+    private static final float HEIGHT = 800;
 
     //Convert a JBox2D x coordinate to a JavaFX pixel x coordinate
     public static float meterToPixel(float meter) {
@@ -43,18 +43,24 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+    	world.setSleepingAllowed(true);
         primaryStage.setTitle("Pinball");
         primaryStage.setFullScreen(false);
         primaryStage.setResizable(false);
 
         final Group root = new Group();
         final Scene scene = new Scene(root, WIDTH, HEIGHT, Color.BLACK);
-        final Ball ball = new Ball(200, 100);
+        final Ball ball = new Ball(600, 805);
 
         //final Square squareBottom = new Square(94.0f, -1.33f, 50.0f, 2.0f, Color.AQUA);
-        final Square squareLeft = new Square(220, 300, 50, 50, Color.AQUA);
-        final Square squareRight = new Square(11f, -19f, 0.5f, 4.0f, Color.AQUA);
-        final Square squareBottomRight = new Square(96.3f, 0.0f, 5.0f, 1.0f, Color.AQUA);
+        final Square squareBottom = new Square(610, 810, 610, 1, Color.AQUA);
+        final Square squareTop = new Square(610, 1, 610, 1, Color.AQUA);
+        final Square squareRight = new Square(610, 810, 1, 810, Color.AQUA);
+        final Square squareLeft = new Square(1, 810, 1, 810, Color.AQUA);
+        final Square kickLane = new Square(587, 810, 1, 710, Color.AQUA);
+        
+        final RoundThing upperRightCorner = new RoundThing(610, 20, 20, Color.RED);
+        final RoundThing r1 = new RoundThing(200, 200, 20, Color.RED); // random ball
 
 
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
@@ -79,22 +85,27 @@ public class Main extends Application {
         timeline.getKeyFrames().add(frame);
 
         root.getChildren().add(ball.node);
-        root.getChildren().add(squareBottomRight.node);
-        root.getChildren().add(squareLeft.node);
+        root.getChildren().add(squareBottom.node);
+        root.getChildren().add(squareTop.node);
         root.getChildren().add(squareRight.node);
+        root.getChildren().add(squareLeft.node);
+        root.getChildren().add(kickLane.node);
+        root.getChildren().add(upperRightCorner.node);
+        root.getChildren().add(r1.node);
+        
 
 
         primaryStage.setScene(scene);
         primaryStage.show();
 
 
-       /* scene.setOnKeyPressed(event -> {
+        scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.SPACE) {
-                ball.addForce(new Vec2(1000,3000));
+                ball.addForce(new Vec2(1,50));
 
             }
         });
-*/
+
 
         timeline.playFromStart();
     }
