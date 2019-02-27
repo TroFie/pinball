@@ -49,10 +49,10 @@ public class Main extends Application {
 
         final Group root = new Group();
         final Scene scene = new Scene(root, WIDTH, HEIGHT, Color.BLACK);
-        final Ball ball = new Ball(WIDTH, HEIGHT / 2);
+        final Ball ball = new Ball(200, 100);
 
         //final Square squareBottom = new Square(94.0f, -1.33f, 50.0f, 2.0f, Color.AQUA);
-        final Square squareLeft = new Square(20, 20, 50, 50, Color.AQUA);
+        final Square squareLeft = new Square(220, 300, 50, 50, Color.AQUA);
         final Square squareRight = new Square(11f, -19f, 0.5f, 4.0f, Color.AQUA);
         final Square squareBottomRight = new Square(96.3f, 0.0f, 5.0f, 1.0f, Color.AQUA);
 
