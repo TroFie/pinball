@@ -29,6 +29,7 @@ public class Main extends Application {
     public int balls = 0;
     public double score = 0;
 	private Text t = new Text(10, 50, "Baller:" + balls + "   " + "Poeng:" + score);
+	private boolean b = false;
 
     //Convert a JBox2D x coordinate to a JavaFX pixel x coordinate
     public static float meterToPixel(float meter) {
@@ -80,7 +81,9 @@ public class Main extends Application {
                 ball.node.setLayoutX(xpos);
                 ball.node.setLayoutY(ypos);
                 score+=0.01;
+                if(b == true) {
                 updateScore();
+                }
             }
         };
 
@@ -119,7 +122,7 @@ public class Main extends Application {
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.SPACE) {
                 ball.addForce(new Vec2(0,50));
-                
+                b = true;
             }
        
             if (event.getCode() == KeyCode.LEFT) {
