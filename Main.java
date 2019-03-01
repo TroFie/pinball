@@ -60,6 +60,10 @@ public class Main extends Application {
         final Square topKickLane = new Square(660, 20, 200, 20, 43, Color.WHITE);
         final Square topKickLane2 = new Square(660, 72, 200, 20, 43, Color.WHITE);
         
+        final RoundThing r1 = new RoundThing(180, 175, 30, Color.RED);
+        final RoundThing r2 = new RoundThing(420, 175, 30, Color.RED);
+        final RoundThing r3 = new RoundThing(300, 300, 30, Color.RED);
+        
 
 
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
@@ -92,8 +96,7 @@ public class Main extends Application {
         root.getChildren().add(squareTop.node);
         root.getChildren().add(squareRight.node);
         root.getChildren().add(squareLeft.node);
-        //root.getChildren().add(kickLane.node);
-        //root.getChildren().add(upperRightCorner.node);
+        root.getChildren().add(kickLane.node);
         root.getChildren().add(r1.node);
         root.getChildren().add(r2.node);
         root.getChildren().add(r3.node);
