@@ -12,9 +12,13 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.jbox2d.callbacks.ContactImpulse;
+import org.jbox2d.callbacks.ContactListener;
+import org.jbox2d.collision.Manifold;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.contacts.Contact;
 
 public class Main extends Application {
 
@@ -23,7 +27,8 @@ public class Main extends Application {
     private static final float WIDTH = 600;
     private static final float HEIGHT = 800;
     public int balls = 0;
-    public int score = 0;
+    public double score = 0;
+	private Text t = new Text(10, 50, "Baller:" + balls + "   " + "Poeng:" + score);
 
     //Convert a JBox2D x coordinate to a JavaFX pixel x coordinate
     public static float meterToPixel(float meter) {
@@ -74,6 +79,8 @@ public class Main extends Application {
                 float ypos = meterToPixel(-body.getPosition().y);
                 ball.node.setLayoutX(xpos);
                 ball.node.setLayoutY(ypos);
+                score+=0.01;
+                updateScore();
             }
         };
 
@@ -87,7 +94,7 @@ public class Main extends Application {
 
         
         timeline.getKeyFrames().add(frame);
-        Text t = new Text(10, 50, "Baller:" + balls + "   " + "Poeng:" + score);
+        
         t.setFont(new Font(20));
         t.setFill(Color.WHITE);
 
@@ -107,12 +114,12 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
        
-
+        
 
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.SPACE) {
                 ball.addForce(new Vec2(0,50));
-
+                
             }
        
             if (event.getCode() == KeyCode.LEFT) {
@@ -131,7 +138,13 @@ public class Main extends Application {
     }
 
 
-    public static void main(String[] args) {
+    protected void updateScore() {
+    	t.setText("Baller:" + balls + "   " + "Poeng:" + Math.round(score * 100.0) / 100.0);
+		
+	}
+
+
+	public static void main(String[] args) {
         launch(args);
     }
 }
