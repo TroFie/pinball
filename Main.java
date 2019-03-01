@@ -1,24 +1,18 @@
 package sample;
 
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.World;
 
 public class Main extends Application {
@@ -50,17 +44,22 @@ public class Main extends Application {
 
         final Group root = new Group();
         final Scene scene = new Scene(root, WIDTH, HEIGHT, Color.BLACK);
-        final Ball ball = new Ball(600, 805);
-
-        //final Square squareBottom = new Square(94.0f, -1.33f, 50.0f, 2.0f, Color.AQUA);
-        final Square squareBottom = new Square(610, 810, 610, 1, Color.AQUA);
-        final Square squareTop = new Square(610, 1, 610, 1, Color.AQUA);
-        final Square squareRight = new Square(610, 810, 1, 810, Color.AQUA);
-        final Square squareLeft = new Square(1, 810, 1, 810, Color.AQUA);
-        final Square kickLane = new Square(587, 810, 1, 710, Color.AQUA);
+        final Ball ball = new Ball(600, 200);
         
-        final RoundThing upperRightCorner = new RoundThing(610, 20, 20, Color.RED);
-        final RoundThing r1 = new RoundThing(200, 200, 20, Color.RED); // random ball
+        
+        final Square squareBottom = new Square(610, 810, 610, 1, 0, Color.AQUA);
+        final Square squareTop = new Square(610, 1, 610, 1, 0, Color.AQUA);
+        final Square squareRight = new Square(610, 810, 1, 810, 0, Color.AQUA);
+        final Square squareLeft = new Square(1, 810, 1, 810, 0, Color.AQUA);
+        //final Square kickLane = new Square(587, 810, 1, 710, 0, Color.AQUA);
+        final Square topKickLane = new Square(640, 600, 200, 20, 34, Color.GREEN);
+        
+        
+        //final RoundThing upperRightCorner = new RoundThing(610, 20, 20, Color.RED);
+        final RoundThing r1 = new RoundThing(175, 175, 30, Color.RED); // random ball
+        final RoundThing r2 = new RoundThing(425, 175, 30, Color.RED);
+        final RoundThing r3 = new RoundThing(300, 300, 30, Color.RED);
+        
 
 
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
@@ -89,9 +88,12 @@ public class Main extends Application {
         root.getChildren().add(squareTop.node);
         root.getChildren().add(squareRight.node);
         root.getChildren().add(squareLeft.node);
-        root.getChildren().add(kickLane.node);
-        root.getChildren().add(upperRightCorner.node);
+        //root.getChildren().add(kickLane.node);
+        //root.getChildren().add(upperRightCorner.node);
         root.getChildren().add(r1.node);
+        root.getChildren().add(r2.node);
+        root.getChildren().add(r3.node);
+        root.getChildren().add(topKickLane.node);
         
 
 
@@ -101,7 +103,17 @@ public class Main extends Application {
 
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.SPACE) {
-                ball.addForce(new Vec2(1,50));
+                ball.addForce(new Vec2(0,10));
+
+            }
+       
+            if (event.getCode() == KeyCode.LEFT) {
+                ball.addForce(new Vec2(-10,0));
+
+            }
+      
+            if (event.getCode() == KeyCode.RIGHT) {
+                ball.addForce(new Vec2(10,0));
 
             }
         });

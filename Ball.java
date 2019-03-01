@@ -23,9 +23,9 @@ public class Ball {
     //Ball radius in pixels
     private int radius;
     /**
-     * There are three types bodies in JBox2D â€“ Static, Kinematic and dynamic In
-     * this application static bodies (BodyType.STATIC â€“ non movable bodies) are
-     * used for drawing hurdles and dynamic bodies (BodyType.DYNAMICâ€“movable
+     * There are three types bodies in JBox2D – Static, Kinematic and dynamic In
+     * this application static bodies (BodyType.STATIC – non movable bodies) are
+     * used for drawing hurdles and dynamic bodies (BodyType.DYNAMIC–movable
      * bodies) are used for falling balls
      */
     private BodyType bodyType;
@@ -34,7 +34,7 @@ public class Ball {
     private Color color;
 
     public Ball(float posX, float posY) {
-        this(posX, posY, BALL_SIZE, BodyType.DYNAMIC, Color.RED);
+        this(posX, posY, BALL_SIZE, BodyType.DYNAMIC, Color.GRAY);
         this.posX = posX;
         this.posY = posY;
     }
