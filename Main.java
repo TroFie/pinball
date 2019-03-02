@@ -37,7 +37,7 @@ public class Main extends Application implements ContactListener {
 	private boolean b = false;
 	
 	
-    //Convert a JBox2D x coordinate to a JavaFX pixel x coordinate
+    //Convert a JBox2D x coordinate to a JavaFX pixel x coordinat
     public static float meterToPixel(float meter) {
         float pixel = meter * PPM;
         return pixel;
