@@ -21,7 +21,6 @@ public class Square {
      * shape to body
      */
 	
-	public static final float DEG_TO_RAD = 0.01745329f;
 	
     public Node node;
     private float posX;
@@ -52,8 +51,8 @@ public class Square {
         rc = new Rectangle();
         rc.setX(posX - sWidth);
         rc.setY(posY - sHeight);
-        rc.setWidth(sWidth);
-        rc.setHeight(sHeight);
+        rc.setWidth(sWidth*2);
+        rc.setHeight(sHeight*2);
         rc.setFill(color);
         rc.setRotate((double)angle);
 
@@ -67,7 +66,7 @@ public class Square {
 
         PolygonShape ps = new PolygonShape();
 
-        ps.setAsBox(Main.pixelToMeter(sWidth), Main.pixelToMeter(sHeight), new Vec2(0.0f, 0.0f),  ((-angle) * DEG_TO_RAD));
+        ps.setAsBox(Main.pixelToMeter(sWidth), Main.pixelToMeter(sHeight), new Vec2(0.0f, 0.0f),  ((-angle) * Main.DEG_TO_RAD));
 
         //fixture for polygon, in this case square
         FixtureDef fd = new FixtureDef();
