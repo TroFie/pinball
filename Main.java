@@ -5,11 +5,15 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.text.*;
 import javafx.scene.Group;
-import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -31,13 +35,15 @@ public class Main extends Application implements ContactListener {
     public final static World world = new World(new Vec2(0.0f, -5.5f));
     private static final float WIDTH = 600;
     private static final float HEIGHT = 800;
-    public int balls = 0;
+    public int balls = 5;
     public double score = 0;
+    public String name;
 	private Text t = new Text(10, 50, "Baller:" + balls + "   " + "Poeng:" + score);
 	private boolean b = false;
 	
 	
-    //Convert a JBox2D x coordinate to a JavaFX pixel x coordinat
+	
+    //Convert a JBox2D x coordinate to a JavaFX pixel x coordinate
     public static float meterToPixel(float meter) {
         float pixel = meter * PPM;
         return pixel;
@@ -94,7 +100,7 @@ public class Main extends Application implements ContactListener {
             }
         };
 
-
+     
 
         final Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -119,7 +125,7 @@ public class Main extends Application implements ContactListener {
         root.getChildren().add(r3.node);
         root.getChildren().add(topKickLane.node);
         root.getChildren().add(t);
-        
+
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -131,16 +137,23 @@ public class Main extends Application implements ContactListener {
        
             if (event.getCode() == KeyCode.LEFT) {
                 ball.addForce(new Vec2(-10,0));
-
+                balls = 0;
+                if (balls == 0) {
+                	NewStage();
+                }
             }
       
             if (event.getCode() == KeyCode.RIGHT) {
                 ball.addForce(new Vec2(10,0));
 
             }
+            
         });
+     
         
-        
+        if (balls == 0) {
+        	NewStage();
+        }
 
         timeline.playFromStart();
              
@@ -150,21 +163,41 @@ public class Main extends Application implements ContactListener {
     	Fixture f1 = cp.getFixtureA();
     	Fixture f2 = cp.getFixtureB();
     	
-    	float b1 = f1.getDensity();
-    	float b2 = f2.getDensity();
+    	Body b1 = f1.getBody();
+    	Body b2 = f2.getBody();
     	
-//    	Object o1 = b1.getUserData();
-//    	Object o2 = b2.getUserData();
+    	Object o1 = b1.getUserData();
+    	Object o2 = b2.getUserData();
     	
-    	if(b == true && b1 != 0.6f && b2 != 0.6f) {
+    	if(b == true) {
     		score+=10;
-    		updateScore();
     		
+    		updateScore();
     		
     	}
     
     }
-
+	Button button;
+    void NewStage()  {
+    	
+    		    Stage subStage = new Stage();
+    		    subStage.setTitle("Scoreboard navn");
+    		            
+    		    TextField nameInput = new TextField();
+    		  
+    		    Text dittNavn = new Text("Din score ble: " + Math.round(score) + "\n" + "Skriv inn ditt navn");
+    		    button = new Button("Lagre score");
+    		    
+    		    VBox layout = new VBox(10);
+    		    layout.setPadding(new Insets(20,20,20,20));
+    		    layout.getChildren().addAll(dittNavn, nameInput, button);
+    		    
+    		    
+    		    Scene scene = new Scene(layout, 300, 200);
+    		    subStage.setScene(scene);
+    		    subStage.show();
+    }
+    
     protected void updateScore() {
     	t.setText("Baller:" + balls + "   " + "Poeng:" + Math.round(score * 100.0) / 100.0);
 	}
