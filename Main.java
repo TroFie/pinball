@@ -17,6 +17,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
@@ -40,6 +43,7 @@ public class Main extends Application implements ContactListener {
     public String name;
 	private Text t = new Text(10, 50, "Baller:" + balls + "   " + "Poeng:" + score);
 	private boolean b = false;
+	private int i = 0;
 	
 	
 	
@@ -67,8 +71,18 @@ public class Main extends Application implements ContactListener {
         
         final Group root = new Group();
         final Scene scene = new Scene(root, WIDTH, HEIGHT, Color.BLACK);
-        final Ball ball = new Ball(599, 800);
-       
+        final Ball[] ball = new Ball[5];
+        final Ball ball0 = new Ball(599, 700);
+        ball[0] = ball0;
+        final Ball ball1 = new Ball(599, 730);
+        ball[1] = ball1;
+        final Ball ball2 = new Ball(599, 760);
+        ball[2] = ball2;
+        final Ball ball3 = new Ball(599, 790);
+        ball[3] = ball3;
+        final Ball ball4 = new Ball(599, 800);
+        ball[4] = ball4;
+        
         final Square squareLeft = new Square(1, 810, 1, 810, 0, Color.WHITE);
         final Square squareRight = new Square(610, 810, 1, 810, 0, Color.WHITE);
         final Square squareTop = new Square(610, 1, 610, 1, 0, Color.WHITE);
@@ -87,11 +101,35 @@ public class Main extends Application implements ContactListener {
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 world.step(2.0f / 60.f, 8, 3);
-                Body body = (Body) ball.node.getUserData();
+                Body body = (Body) ball0.node.getUserData();
                 float xpos = meterToPixel(body.getPosition().x);
                 float ypos = meterToPixel(-body.getPosition().y);
-                ball.node.setLayoutX(xpos);
-                ball.node.setLayoutY(ypos);
+                ball0.node.setLayoutX(xpos);
+                ball0.node.setLayoutY(ypos);
+                
+                Body body1 = (Body) ball1.node.getUserData();
+                float xpos1 = meterToPixel(body1.getPosition().x);
+                float ypos1 = meterToPixel(-body1.getPosition().y);
+                ball1.node.setLayoutX(xpos1);
+                ball1.node.setLayoutY(ypos1);
+                
+                Body body2 = (Body) ball2.node.getUserData();
+                float xpos2 = meterToPixel(body2.getPosition().x);
+                float ypos2 = meterToPixel(-body2.getPosition().y);
+                ball2.node.setLayoutX(xpos2);
+                ball2.node.setLayoutY(ypos2);
+                
+                Body body3 = (Body) ball3.node.getUserData();
+                float xpos3 = meterToPixel(body3.getPosition().x);
+                float ypos3 = meterToPixel(-body3.getPosition().y);
+                ball3.node.setLayoutX(xpos3);
+                ball3.node.setLayoutY(ypos3);
+                
+                Body body4 = (Body) ball4.node.getUserData();
+                float xpos4 = meterToPixel(body4.getPosition().x);
+                float ypos4 = meterToPixel(-body4.getPosition().y);
+                ball4.node.setLayoutX(xpos4);
+                ball4.node.setLayoutY(ypos4);
                 score+=0.01;
                 if(b == true) {
                 updateScore();
@@ -115,7 +153,11 @@ public class Main extends Application implements ContactListener {
         t.setFont(new Font(20));
         t.setFill(Color.WHITE);
 
-        root.getChildren().add(ball.node);
+        root.getChildren().add(ball0.node);
+        root.getChildren().add(ball1.node);
+        root.getChildren().add(ball2.node);
+        root.getChildren().add(ball3.node);
+        root.getChildren().add(ball4.node);
         root.getChildren().add(squareBottom.node);
         root.getChildren().add(squareTop.node);
         root.getChildren().add(squareRight.node);
@@ -131,10 +173,16 @@ public class Main extends Application implements ContactListener {
         primaryStage.show();
 
         scene.setOnKeyPressed(event -> {
+        	
             if (event.getCode() == KeyCode.SPACE) {
-                ball.addForce(new Vec2(0,50));
+            	if(i<5) {
+                ball[i].addForce(new Vec2(0,50));
+            	}
+                System.out.println(i);
                 b = true;
                 balls--;
+                i++;
+            	
                 if (balls == -1) {
                 	b = false;
                 	primaryStage.close();
