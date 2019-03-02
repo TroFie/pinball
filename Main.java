@@ -5,15 +5,22 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.text.*;
 import javafx.scene.Group;
-import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
@@ -34,12 +41,18 @@ public class Main extends Application implements ContactListener {
     public final static World world = new World(new Vec2(0.0f, -5.5f));
     private static final float WIDTH = 600;
     private static final float HEIGHT = 800;
-    public int balls = 2000;
+    public int ballsLeft = 5;
     public double score = 0;
-	private Text t = new Text(10, 50, "Baller:" + balls + "   " + "Poeng:" + score);
+    public String name;
+	private Text t = new Text(10, 50, "Baller:" + ballsLeft + "   " + "Poeng:" + score);
 	private boolean b = false;
+	private boolean ballInPlay = false;
+	private boolean gameFinished = false;
+	private int i = 0;
 	
-    //Convert a JBox2D x coordinate to a JavaFX pixel x coordinat
+	
+	
+    //Convert a JBox2D x coordinate to a JavaFX pixel x coordinate
     public static float meterToPixel(float meter) {
         float pixel = meter * PPM;
         return pixel;
@@ -66,8 +79,15 @@ public class Main extends Application implements ContactListener {
         
         final Group root = new Group();
         final Scene scene = new Scene(root, WIDTH, HEIGHT, Color.BLACK);
-        final Ball ball = new Ball(ballStartX, ballStartY);
-       
+        final Ball[] balls = new Ball[] {
+        	new Ball(599, 700),
+        	new Ball(599, 730),
+        	new Ball(599, 760),
+        	new Ball(599, 790),
+        	new Ball(599, 800)
+        };
+
+        
         final Square squareLeft = new Square(1, 810, 1, 810, 0, Color.WHITE);
         final Square squareRight = new Square(610, 810, 1, 810, 0, Color.WHITE);
         final Square squareTop = new Square(610, 1, 610, 1, 0, Color.WHITE);
@@ -98,55 +118,43 @@ public class Main extends Application implements ContactListener {
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 world.step(2.0f / 60.f, 8, 3);
-                Body body = (Body) ball.node.getUserData();
-                float xpos = meterToPixel(body.getPosition().x);
-                float ypos = meterToPixel(-body.getPosition().y);
-                ball.node.setLayoutX(xpos);
-                ball.node.setLayoutY(ypos);
                 
-                float rotAngle = body.getAngle() * RAD_TO_DEG;
                 
-                ball.node.setRotate(rotAngle);
+                for(Ball ball : balls) {
+                    Body body = (Body) ball.node.getUserData();
+                    float xpos = meterToPixel(body.getPosition().x);
+                    float ypos = meterToPixel(-body.getPosition().y);
+                    ball.node.setLayoutX(xpos);
+                    ball.node.setLayoutY(ypos);
+                    
+                    if(ball.node.getLayoutY() > 740 && ball.node.getLayoutX() < 580) {
+	                	// Sett ballen utenfor skjermen
+                    	body.setTransform(new Vec2(5000, 5000), 0);
+	                	ballInPlay = false;           
+	                } 
+                }  
                 
+                
+                if(gameFinished == false && ballInPlay == false && ballsLeft == 0) {
+                    b = false;
+                	primaryStage.close();
+                	NewStage();
+                	gameFinished = true;
+                } 
+                
+
                 score+=0.01;
-                
-                if(balls > 0) {
-	                if(ball.node.getLayoutY() > 740 && ball.node.getLayoutX() < 580) {
-	                	balls--;
-	                	
-	                	if(balls > 0) {
-		                	body.setTransform(new Vec2(Main.pixelToMeter(ballStartX), Main.pixelToMeter(-ballStartY)), 0);
-		                	body.setLinearVelocity(new Vec2(0, 0));
-	                	}
-	                	else {
-	                      	body.setTransform(new Vec2(Main.pixelToMeter(2000), Main.pixelToMeter(2000)), 0);
-		                	body.setLinearVelocity(new Vec2(0, 0));
-	                	}
-	                }
-                }
-                else {
-                	b = false;
-                	t.setText("Du tapte!.!");
-                }
-                
+      
                 
                 if(b == true) {
                 	updateScore();
                 }
                 
-                
-                for(Flipper flipper : flippers) {
-                    body = (Body) flipper.node.getUserData();
-
-                       
-                    rotAngle = body.getAngle() * RAD_TO_DEG;
-                    
-                    flipper.node.setRotate(rotAngle);    
-                }
+               
             }
         };
 
-
+     
 
         final Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -160,7 +168,11 @@ public class Main extends Application implements ContactListener {
         t.setFont(new Font(20));
         t.setFill(Color.WHITE);
 
-        root.getChildren().add(ball.node);
+        
+        for(Ball ball : balls) {
+        	root.getChildren().add(ball.node);
+        }
+
         root.getChildren().add(squareBottom.node);
         root.getChildren().add(squareTop.node);
         root.getChildren().add(squareRight.node);
@@ -175,39 +187,41 @@ public class Main extends Application implements ContactListener {
         root.getChildren().add(ballCatch2.node);
         root.getChildren().add(ballCatch3.node);
         root.getChildren().add(ballCatch4.node);
-        
-        for(Flipper flipper : flippers) {
-        	root.getChildren().add(flipper.node);
-        }
-        
-        
+
+
         primaryStage.setScene(scene);
         primaryStage.show();
 
         scene.setOnKeyPressed(event -> {
+        	
             if (event.getCode() == KeyCode.SPACE) {
-                ball.addForce(new Vec2(0,50));
+            	if(ballInPlay)
+            		return;
+            	
+            	if(i < 5) {
+            		balls[i].addForce(new Vec2(0,50));
+            		ballInPlay = true;
+            	}
+            	
+                
                 b = true;
+                ballsLeft--;
+                i++;
             }
        
-            if (event.getCode() == KeyCode.LEFT) {
-                ball.addForce(new Vec2(-10,0));
-
-            }
+            if (event.getCode() == KeyCode.LEFT) {}
       
-            if (event.getCode() == KeyCode.RIGHT) {
-                ball.addForce(new Vec2(10,0));
-
-            }
+            if (event.getCode() == KeyCode.RIGHT) {}
+            
         });
-        
-        
+     
+
 
         timeline.playFromStart();
              
     }
     public void beginContact(Contact cp)throws NullPointerException{
-    
+        
     	Fixture f1 = cp.getFixtureA();
     	Fixture f2 = cp.getFixtureB();
     	
@@ -216,18 +230,36 @@ public class Main extends Application implements ContactListener {
     	
 //    	Object o1 = b1.getUserData();
 //    	Object o2 = b2.getUserData();
+//    		Funket ikke, userdata = null
     	
     	if(b == true && b1 != 0.6f && b2 != 0.6f) {
     		score+=10;
     		updateScore();
-    		
-    		
     	}
-    
     }
-
+	Button button;
+    void NewStage()  {
+    	
+    		    Stage subStage = new Stage();
+    		    subStage.setTitle("Scoreboard navn");
+    		            
+    		    TextField nameInput = new TextField();
+    		  
+    		    Text dittNavn = new Text("Din score ble: " + Math.round(score) + "\n" + "Skriv inn ditt navn");
+    		    button = new Button("Lagre score");
+    		    
+    		    VBox layout = new VBox(10);
+    		    layout.setPadding(new Insets(20,20,20,20));
+    		    layout.getChildren().addAll(dittNavn, nameInput, button);
+    		    
+    		    
+    		    Scene scene = new Scene(layout, 300, 200);
+    		    subStage.setScene(scene);
+    		    subStage.show();
+    }
+    
     protected void updateScore() {
-    	t.setText("Baller:" + balls + "   " + "Poeng:" + Math.round(score * 100.0) / 100.0);
+    	t.setText("Baller:" + ballsLeft + "   " + "Poeng:" + Math.round(score * 100.0) / 100.0);
 	}
 
 	public static void main(String[] args) {
