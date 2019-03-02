@@ -231,10 +231,11 @@ public class Main extends Application implements ContactListener {
 //    	Object o1 = b1.getUserData();
 //    	Object o2 = b2.getUserData();
 //    		Funket ikke, userdata = null
-    	
+    	if(b1 == 0.2f & b2 != 0.2f || b1 != 0.2f && b2 == 0.2f) {
     	if(b == true && b1 != 0.6f && b2 != 0.6f) {
     		score+=10;
     		updateScore();
+    	}
     	}
     }
 	Button button;
