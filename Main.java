@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.text.*;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -118,7 +119,7 @@ public class Main extends Application implements ContactListener {
         root.getChildren().add(r3.node);
         root.getChildren().add(topKickLane.node);
         root.getChildren().add(t);
-
+        
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -149,15 +150,16 @@ public class Main extends Application implements ContactListener {
     	Fixture f1 = cp.getFixtureA();
     	Fixture f2 = cp.getFixtureB();
     	
-    	Body b1 = f1.getBody();
-    	Body b2 = f2.getBody();
+    	float b1 = f1.getDensity();
+    	float b2 = f2.getDensity();
     	
-    	Object o1 = b1.getUserData();
-    	Object o2 = b2.getUserData();
+//    	Object o1 = b1.getUserData();
+//    	Object o2 = b2.getUserData();
     	
-    	if(b == true) {
+    	if(b == true && b1 != 0.6f && b2 != 0.6f) {
     		score+=10;
     		updateScore();
+    		
     		
     	}
     
