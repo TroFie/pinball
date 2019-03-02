@@ -96,6 +96,7 @@ public class Main extends Application implements ContactListener {
                 if(b == true) {
                 updateScore();
                 }
+                
                
             }
         };
@@ -133,47 +134,43 @@ public class Main extends Application implements ContactListener {
             if (event.getCode() == KeyCode.SPACE) {
                 ball.addForce(new Vec2(0,50));
                 b = true;
-            }
-       
-            if (event.getCode() == KeyCode.LEFT) {
-                ball.addForce(new Vec2(-10,0));
-                balls = 0;
-                if (balls == 0) {
+                balls--;
+                if (balls == -1) {
+                	b = false;
+                	primaryStage.close();
                 	NewStage();
                 }
+                
+            
             }
+       
+            if (event.getCode() == KeyCode.LEFT) {}
       
-            if (event.getCode() == KeyCode.RIGHT) {
-                ball.addForce(new Vec2(10,0));
-
-            }
+            if (event.getCode() == KeyCode.RIGHT) {}
             
         });
      
-        
-        if (balls == 0) {
-        	NewStage();
-        }
+
 
         timeline.playFromStart();
              
     }
     public void beginContact(Contact cp)throws NullPointerException{
-    
+        
     	Fixture f1 = cp.getFixtureA();
     	Fixture f2 = cp.getFixtureB();
     	
-    	Body b1 = f1.getBody();
-    	Body b2 = f2.getBody();
+    	float b1 = f1.getDensity();
+    	float b2 = f2.getDensity();
     	
-    	Object o1 = b1.getUserData();
-    	Object o2 = b2.getUserData();
+//    	Object o1 = b1.getUserData();
+//    	Object o2 = b2.getUserData();
+//    		Funket ikke, userdata = null
     	
     	if(b == true && b1 != 0.6f && b2 != 0.6f) {
     		score+=10;
     		updateScore();
     	}
-    
     }
 	Button button;
     void NewStage()  {
