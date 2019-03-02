@@ -169,11 +169,9 @@ public class Main extends Application implements ContactListener {
     	Object o1 = b1.getUserData();
     	Object o2 = b2.getUserData();
     	
-    	if(b == true) {
+    	if(b == true && b1 != 0.6f && b2 != 0.6f) {
     		score+=10;
-    		
     		updateScore();
-    		
     	}
     
     }
