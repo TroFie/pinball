@@ -100,36 +100,15 @@ public class Main extends Application implements ContactListener {
         
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-                world.step(2.0f / 60.f, 8, 3);
-                Body body = (Body) ball0.node.getUserData();
+            	world.step(2.0f / 60.f, 8, 3);
+            	for(Ball ball : ball) {
+                Body body = (Body) ball.node.getUserData();
                 float xpos = meterToPixel(body.getPosition().x);
                 float ypos = meterToPixel(-body.getPosition().y);
-                ball0.node.setLayoutX(xpos);
-                ball0.node.setLayoutY(ypos);
-                
-                Body body1 = (Body) ball1.node.getUserData();
-                float xpos1 = meterToPixel(body1.getPosition().x);
-                float ypos1 = meterToPixel(-body1.getPosition().y);
-                ball1.node.setLayoutX(xpos1);
-                ball1.node.setLayoutY(ypos1);
-                
-                Body body2 = (Body) ball2.node.getUserData();
-                float xpos2 = meterToPixel(body2.getPosition().x);
-                float ypos2 = meterToPixel(-body2.getPosition().y);
-                ball2.node.setLayoutX(xpos2);
-                ball2.node.setLayoutY(ypos2);
-                
-                Body body3 = (Body) ball3.node.getUserData();
-                float xpos3 = meterToPixel(body3.getPosition().x);
-                float ypos3 = meterToPixel(-body3.getPosition().y);
-                ball3.node.setLayoutX(xpos3);
-                ball3.node.setLayoutY(ypos3);
-                
-                Body body4 = (Body) ball4.node.getUserData();
-                float xpos4 = meterToPixel(body4.getPosition().x);
-                float ypos4 = meterToPixel(-body4.getPosition().y);
-                ball4.node.setLayoutX(xpos4);
-                ball4.node.setLayoutY(ypos4);
+                ball.node.setLayoutX(xpos);
+                ball.node.setLayoutY(ypos);
+            	}
+            	
                 score+=0.01;
                 if(b == true) {
                 updateScore();
@@ -178,11 +157,9 @@ public class Main extends Application implements ContactListener {
             	if(i<5) {
                 ball[i].addForce(new Vec2(0,50));
             	}
-                System.out.println(i);
                 b = true;
                 balls--;
-                i++;
-            	
+                i++;  	
                 if (balls == -1) {
                 	b = false;
                 	primaryStage.close();
@@ -214,10 +191,11 @@ public class Main extends Application implements ContactListener {
 //    	Object o1 = b1.getUserData();
 //    	Object o2 = b2.getUserData();
 //    		Funket ikke, userdata = null
-    	
+    	if(b1 == 0.2f & b2 != 0.2f || b1 != 0.2f && b2 == 0.2f) {
     	if(b == true && b1 != 0.6f && b2 != 0.6f) {
     		score+=10;
     		updateScore();
+    	}
     	}
     }
 	Button button;
