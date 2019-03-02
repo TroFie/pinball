@@ -15,12 +15,16 @@ import javafx.util.Duration;
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
+import org.jbox2d.common.Transform;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
-public class Main extends Application {
+
+
+public class Main extends Application implements ContactListener {
 
     public static final float PPM = 32.0f;
     public final static World world = new World(new Vec2(0.0f, -5.5f));
@@ -30,7 +34,8 @@ public class Main extends Application {
     public double score = 0;
 	private Text t = new Text(10, 50, "Baller:" + balls + "   " + "Poeng:" + score);
 	private boolean b = false;
-
+	
+	
     //Convert a JBox2D x coordinate to a JavaFX pixel x coordinate
     public static float meterToPixel(float meter) {
         float pixel = meter * PPM;
@@ -50,18 +55,18 @@ public class Main extends Application {
         primaryStage.setTitle("Pinball");
         primaryStage.setFullScreen(false);
         primaryStage.setResizable(false);
-
+        Main.world.setContactListener(this);
+        
+        
         final Group root = new Group();
         final Scene scene = new Scene(root, WIDTH, HEIGHT, Color.BLACK);
         final Ball ball = new Ball(599, 800);
-        
-        
+       
         final Square squareLeft = new Square(1, 810, 1, 810, 0, Color.WHITE);
         final Square squareRight = new Square(610, 810, 1, 810, 0, Color.WHITE);
         final Square squareTop = new Square(610, 1, 610, 1, 0, Color.WHITE);
         final Square squareBottom = new Square(610, 810, 610, 1, 0, Color.WHITE);
         final Square kickLane = new Square(587, 810, 1, 710, 0, Color.WHITE);
-        
         
         final Square topKickLane = new Square(660, 20, 200, 20, 43, Color.WHITE);
         final Square topKickLane2 = new Square(660, 72, 200, 20, 43, Color.WHITE);
@@ -70,8 +75,8 @@ public class Main extends Application {
         final RoundThing r2 = new RoundThing(420, 175, 30, Color.RED);
         final RoundThing r3 = new RoundThing(300, 300, 30, Color.RED);
         
-
-
+        
+        
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 world.step(2.0f / 60.f, 8, 3);
@@ -84,10 +89,11 @@ public class Main extends Application {
                 if(b == true) {
                 updateScore();
                 }
+               
             }
         };
 
-       
+
 
         final Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -113,11 +119,8 @@ public class Main extends Application {
         root.getChildren().add(topKickLane.node);
         root.getChildren().add(t);
 
-  
         primaryStage.setScene(scene);
         primaryStage.show();
-       
-        
 
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.SPACE) {
@@ -135,19 +138,48 @@ public class Main extends Application {
 
             }
         });
-
+        
+        
 
         timeline.playFromStart();
+             
     }
-
+    public void beginContact(Contact cp)throws NullPointerException{
+    
+    	Fixture f1 = cp.getFixtureA();
+    	Fixture f2 = cp.getFixtureB();
+    	
+    	Body b1 = f1.getBody();
+    	Body b2 = f2.getBody();
+    	
+    	Object o1 = b1.getUserData();
+    	Object o2 = b2.getUserData();
+    	
+    	if(b == true) {
+    		score+=10;
+    		updateScore();
+    		
+    	}
+    
+    }
 
     protected void updateScore() {
     	t.setText("Baller:" + balls + "   " + "Poeng:" + Math.round(score * 100.0) / 100.0);
-		
 	}
-
 
 	public static void main(String[] args) {
         launch(args);
     }
+
+
+	@Override
+	public void endContact(Contact cp) {}
+
+
+	@Override
+	public void preSolve(Contact contact, Manifold oldManifold) {}
+
+
+	@Override
+	public void postSolve(Contact contact, ContactImpulse impulse) {}
 }
