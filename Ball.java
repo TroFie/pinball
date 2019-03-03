@@ -10,36 +10,28 @@ import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 
+// Metoden lager en ball ved √• bruke JavaFX og CircleShape fra JBox2D
 
 public class Ball {
 
     public static final int BALL_SIZE = 10;
-    //JavaFX UI for ball
     public Node node;
-    //X and Y position of the ball in JBox2D world
     private float posX;
     private float posY;
-    //     private Color color;
-    //Ball radius in pixels
     private int radius;
-    /**
-     * There are three types bodies in JBox2D ñ Static, Kinematic and dynamic In
-     * this application static bodies (BodyType.STATIC ñ non movable bodies) are
-     * used for drawing hurdles and dynamic bodies (BodyType.DYNAMICñmovable
-     * bodies) are used for falling balls
-     */
     private BodyType bodyType;
     private Body body;
-    //Gradient effects for balls
     private Color color;
 
     public Ball(float posX, float posY) {
+    	
         this(posX, posY, BALL_SIZE, BodyType.DYNAMIC, Color.GRAY);
         this.posX = posX;
         this.posY = posY;
     }
 
     public Ball(float posX, float posY, int radius, BodyType bodyType, Color color) {
+    	
         this.posX = posX;
         this.posY = posY;
         this.radius = radius;
@@ -48,46 +40,29 @@ public class Ball {
         node = create();
     }
 
-    /**
-     * This method creates a ball by using RoundThing object from JavaFX and
-     * CircleShape from JBox2D
-     */
+     
     private Node create() {
-        //Create an UI for ball - JavaFX code
+      
         Circle ball = new Circle();
         ball.setRadius(radius);
-        ball.setFill(color); //set look and feel
-
-        /**
-         * Set ball position on JavaFX scene. We need to convert JBox2D
-         * coordinates to JavaFX coordinates which are in pixels.
-         */
+        ball.setFill(color); 
         ball.setLayoutX(posX);
         ball.setLayoutY(posY);
+        ball.setCache(true); 
 
-        ball.setCache(true); //Cache this object for better performance
-
-        //Create an JBox2D body defination for ball.
+       
         BodyDef bd = new BodyDef();
         bd.type = bodyType;
         bd.position.set(Main.pixelToMeter(posX), Main.pixelToMeter(-posY));
 
         CircleShape cs = new CircleShape();
-        cs.m_radius = Main.pixelToMeter(radius);  //We need to convert radius to JBox2D equivalent
+        cs.m_radius = Main.pixelToMeter(radius);  
 
-        // Create a fixture for ball
         FixtureDef fd = new FixtureDef();
         fd.shape = cs;
         fd.density = 0.2f;
         fd.friction = 5f;
         fd.restitution = 0.7f;
-
-
-        /**
-         * Virtual invisible JBox2D body of ball. Bodies have velocity and
-         * position. Forces, torques, and impulses can be applied to these
-         * bodies.
-         */
 
         body = Main.world.createBody(bd);
         body.createFixture(fd);
@@ -95,6 +70,8 @@ public class Ball {
         return ball;
     }
 
+    // Metode som f√•r ballen til √• fly oppover. Brukes til utskytning.
+    
     public void addForce(Vec2 force) {
         body.applyForce(force, body.getWorldCenter());
     }
