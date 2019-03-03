@@ -34,13 +34,16 @@ public class Flipper {
     
     private static Rectangle rc;
 
-    public Flipper(float posX, float posY, float sWidth, float sHeight, float angle, Color color) {
+    private boolean rightFlipper;
+    
+    public Flipper(boolean rightFlipper, float posX, float posY, float sWidth, float sHeight, float angle, Color color) {
         this.posX = posX;
         this.posY = posY;
         this.sWidth = sWidth;
         this.sHeight = sHeight;
         this.color = color;
         this.angle = angle;
+        this.rightFlipper = rightFlipper;
         node = create();
     }
 
@@ -78,9 +81,22 @@ public class Flipper {
         RevoluteJointDef revJoint = new RevoluteJointDef();
         revJoint.bodyA = body;
         revJoint.bodyB = pivot;
-        revJoint.localAnchorA.set(new Vec2(Main.pixelToMeter(50),Main.pixelToMeter(0)));
-        revJoint.lowerAngle = -25 * Main.DEG_TO_RAD;
-        revJoint.upperAngle = 25 * Main.DEG_TO_RAD;
+        
+        if(rightFlipper) {
+        	revJoint.localAnchorA.set(new Vec2(Main.pixelToMeter(50),Main.pixelToMeter(0)));
+        	
+
+            revJoint.lowerAngle = -20 * Main.DEG_TO_RAD;
+            revJoint.upperAngle = 20 * Main.DEG_TO_RAD;
+            
+        }
+        else {
+        	revJoint.localAnchorA.set(new Vec2(Main.pixelToMeter(-50),Main.pixelToMeter(0)));
+
+            revJoint.lowerAngle = -20 * Main.DEG_TO_RAD;
+            revJoint.upperAngle = 20 * Main.DEG_TO_RAD;
+            
+        }
         revJoint.enableLimit = true;
         
         revJoint.maxMotorTorque = 1000.0f;

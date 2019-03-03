@@ -168,8 +168,8 @@ public class Main extends Application implements ContactListener {
         final RoundThing r6 = new RoundThing(370, 480, 20, Color.BLUE);
         
         final Flipper[] flippers = {
-    		new Flipper(270, 630, 50, 5, 0, Color.GREEN),
-        		
+    		new Flipper(true, 420, 630, 50, 5, 0, Color.GREEN),
+    		new Flipper(false, 170, 630, 50, 5, 0, Color.GREEN),
         };
   
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
@@ -194,14 +194,16 @@ public class Main extends Application implements ContactListener {
                 
                 for(Flipper flipper : flippers) {
                 	Body body = (Body)flipper.node.getUserData();
-                	flipper.node.setRotate(body.getAngle() * RAD_TO_DEG);
+                	flipper.node.setRotate(-(body.getAngle() * RAD_TO_DEG));
                 	
                     float xpos = meterToPixel(body.getPosition().x);
                     float ypos = meterToPixel(-body.getPosition().y);
                     ((Rectangle)flipper.node).setX(xpos - flipper.sWidth);
                     ((Rectangle)flipper.node).setY(ypos - flipper.sHeight);
                 }
+                
                 flippers[0].joint.enableMotor(false);
+                flippers[1].joint.enableMotor(false);
 
                           
                 if(gameFinished == false && ballInPlay == false && ballsLeft == 0) {
@@ -334,12 +336,15 @@ public class Main extends Application implements ContactListener {
        
             
             
-            if (event.getCode() == KeyCode.LEFT) {
+            if (event.getCode() == KeyCode.RIGHT) {
                 flippers[0].joint.enableMotor(true);
                 flippers[0].joint.setMotorSpeed(50);
             }
       
-            if (event.getCode() == KeyCode.RIGHT) {}
+            if (event.getCode() == KeyCode.LEFT) {
+                flippers[1].joint.enableMotor(true);
+                flippers[1].joint.setMotorSpeed(-50);
+            }
             
             if (event.getCode() == KeyCode.ESCAPE) {
             	ballsLeft = 0;
