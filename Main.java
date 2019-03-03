@@ -39,11 +39,20 @@ import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
-
+/**
+ * MANUAL
+ * Key 1 = decrease launch power
+ * Key 2 = increase launch power
+ * Key SPACE = launch ball
+ * Key ESC = quits the game
+ * Key LEFT = move left flipper
+ * KEY RIGHT = move right flipper 
+ *
+ */
 
 public class Main extends Application implements ContactListener {
-	public static final float DEG_TO_RAD = 0.01745329f; // Degrees to radiance
-	public static final float RAD_TO_DEG = 57.2957795f; // Radiance to degrees
+   public static final float DEG_TO_RAD = 0.01745329f; // Degrees to radiance
+    public static final float RAD_TO_DEG = 57.2957795f; // Radiance to degrees
     public static final float PPM = 32.0f; // Pixel per metre 
     public final static World world = new World(new Vec2(0.0f, -5.5f));
     private static final float WIDTH = 600;
