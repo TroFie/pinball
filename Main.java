@@ -383,7 +383,7 @@ public class Main extends Application implements ContactListener {
      * Saves the current user and displaying the top 10 list trough button-events
      * @param null
      * @return null
-     * @author Simen
+     * @author Simon
 	*/
     void NewStage()  {
     		    Stage subStage = new Stage();
