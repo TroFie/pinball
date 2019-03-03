@@ -13,30 +13,26 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.joints.Joint;
+import org.jbox2d.dynamics.joints.RevoluteJoint;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 
 public class Flipper {
-    //JavaFX UI for square
-    /**
-     * 1 define body 2 create body 3 create shape 4 create fixture 5 attach
-     * shape to body
-     */
-	
 	public static final float DEG_TO_RAD = 0.01745329f;
 	
     public Node node;
+    public RevoluteJoint joint;
+
+    public float sWidth;
+    public float sHeight;
+
     private float posX;
     private float posY;
-    private float sWidth;
-    private float sHeight;
     private float angle;
     private static Color color;
-//    private BodyType bodyType;
-
+    
     private static Rectangle rc;
-//    private float angle;
-//    private BodyDef bd;
 
     public Flipper(float posX, float posY, float sWidth, float sHeight, float angle, Color color) {
         this.posX = posX;
@@ -45,12 +41,10 @@ public class Flipper {
         this.sHeight = sHeight;
         this.color = color;
         this.angle = angle;
-//        this.bodyType = bodyType;
         node = create();
     }
 
     public Node create() {
-        //UI for square in JavaFX
         rc = new Rectangle();
         rc.setX(posX - sWidth);
         rc.setY(posY - sHeight);
@@ -60,7 +54,6 @@ public class Flipper {
         rc.setRotate((double)angle);
 
 
-        //Create an JBox2D body definition for square.
         BodyDef bd = new BodyDef();
         bd.type = BodyType.DYNAMIC;
         bd.position.set(Main.pixelToMeter(posX), Main.pixelToMeter(-posY));
@@ -70,7 +63,6 @@ public class Flipper {
 
         ps.setAsBox(Main.pixelToMeter(sWidth), Main.pixelToMeter(sHeight), new Vec2(0.0f, 0.0f),  ((-angle) * DEG_TO_RAD));
 
-        //fixture for polygon, in this case square
         FixtureDef fd = new FixtureDef();
         fd.shape = ps;
         fd.density = 0.6f;
@@ -81,29 +73,30 @@ public class Flipper {
         Body body = Main.world.createBody(bd);
         body.createFixture(fd);
         
-        Body pivot = CreateCircle(110, 457, 3);
+        Body pivot = CreateCircle(Main.pixelToMeter(posX), Main.pixelToMeter(-posY), 0);
 
         RevoluteJointDef revJoint = new RevoluteJointDef();
-        revJoint.initialize(body, pivot, pivot.getWorldCenter()); //new org.jbox2d.common.Vec2(20, 20));
-        revJoint.motorSpeed = 3.14f * 2;
-        revJoint.maxMotorTorque = 1000.0f;
-        revJoint.enableMotor = true;
-        revJoint.localAnchorA.set(new Vec2(Main.pixelToMeter(10),Main.pixelToMeter(8)));
-
-        Main.world.createJoint(revJoint);
+        revJoint.bodyA = body;
+        revJoint.bodyB = pivot;
+        revJoint.localAnchorA.set(new Vec2(Main.pixelToMeter(50),Main.pixelToMeter(0)));
+        revJoint.lowerAngle = -25 * Main.DEG_TO_RAD;
+        revJoint.upperAngle = 25 * Main.DEG_TO_RAD;
+        revJoint.enableLimit = true;
         
+        revJoint.maxMotorTorque = 1000.0f;
+        revJoint.enableMotor = false;
 
-        //body.setTransform(body.getPosition(), -(angle * DEG_TO_RAD));
+        joint = (RevoluteJoint)Main.world.createJoint(revJoint);
         
         
         rc.setUserData(body);
         return rc;
     }
     
-    Body CreateCircle(int x, int y, int radius) {
+    Body CreateCircle(float x, float y, int radius) {
     	BodyDef bodyDef = new BodyDef();
-    	bodyDef.type = BodyType.DYNAMIC;
-    	bodyDef.position.set(Main.pixelToMeter(x), Main.pixelToMeter(y));
+    	bodyDef.type = BodyType.STATIC;
+    	bodyDef.position.set(x, y);
     	
     	Body body = Main.world.createBody(bodyDef);
     	

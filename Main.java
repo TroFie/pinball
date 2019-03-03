@@ -165,7 +165,7 @@ public class Main extends Application implements ContactListener {
         final RoundThing r3 = new RoundThing(290, 300, 30, Color.RED);
         
         final Flipper[] flippers = {
-    		new Flipper(100, 300, 50, 5, 0, Color.GREEN),
+    		new Flipper(270, 630, 50, 5, 0, Color.GREEN),
         		
         };
         
@@ -193,6 +193,18 @@ public class Main extends Application implements ContactListener {
                 }  
                 
                 
+                for(Flipper flipper : flippers) {
+                	Body body = (Body)flipper.node.getUserData();
+                	flipper.node.setRotate(body.getAngle() * RAD_TO_DEG);
+                	
+                    float xpos = meterToPixel(body.getPosition().x);
+                    float ypos = meterToPixel(-body.getPosition().y);
+                    ((Rectangle)flipper.node).setX(xpos - flipper.sWidth);
+                    ((Rectangle)flipper.node).setY(ypos - flipper.sHeight);
+                }
+                flippers[0].joint.enableMotor(false);
+
+                          
                 if(gameFinished == false && ballInPlay == false && ballsLeft == 0) {
                     b = false;
                 	primaryStage.close();
@@ -256,6 +268,11 @@ public class Main extends Application implements ContactListener {
         root.getChildren().add(bottom2.node);
         root.getChildren().add(bottom3.node);
         root.getChildren().add(bottom4.node);
+        
+        for(Flipper flipper : flippers) {
+        	root.getChildren().add(flipper.node);
+        }
+
 
 
         primaryStage.setScene(scene);
@@ -278,7 +295,12 @@ public class Main extends Application implements ContactListener {
                 i++;
             }
        
-            if (event.getCode() == KeyCode.LEFT) {}
+            
+            
+            if (event.getCode() == KeyCode.LEFT) {
+                flippers[0].joint.enableMotor(true);
+                flippers[0].joint.setMotorSpeed(50);
+            }
       
             if (event.getCode() == KeyCode.RIGHT) {}
             
