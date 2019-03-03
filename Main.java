@@ -6,22 +6,16 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.text.*;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -37,13 +30,9 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
-
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
-
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
-import org.jbox2d.common.Transform;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
@@ -53,33 +42,39 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 
 public class Main extends Application implements ContactListener {
-	public static final float DEG_TO_RAD = 0.01745329f;
-	public static final float RAD_TO_DEG = 57.2957795f;
-
-    public static final float PPM = 32.0f;
+	public static final float DEG_TO_RAD = 0.01745329f; // Degrees to radiance
+	public static final float RAD_TO_DEG = 57.2957795f; // Radiance to degrees
+    public static final float PPM = 32.0f; // Pixel per metre 
     public final static World world = new World(new Vec2(0.0f, -5.5f));
     private static final float WIDTH = 600;
     private static final float HEIGHT = 800;
-    public int ballsLeft = 5;
-    public double score = 0;
-    public String name;
-	private boolean b = false;
-	private boolean ballInPlay = false;
-	private boolean gameFinished = false;
-	private int i = 0;
-	Vector<Bruker> B = new Vector<Bruker>();
-	public int antBrukere = 0;
-	private int styrke = 3;
-	private Text t = new Text(10, 50, "Baller:" + ballsLeft + "   " + "Styrke : " + styrke + "	" + "Poeng:" + Math.round(score * 100.0) / 100.0);
+    private int ballsLeft = 5;
+    private double score = 0;
+    private boolean b = false;
+    private boolean ballInPlay = false;
+    private boolean gameFinished = false;
+    private int count = 0;
+    public Vector<User> B = new Vector<User>();
+    private int power = 5;
+    private Text text = new Text(10, 50, "Baller:" + ballsLeft + "   " + "Styrke : " + power + "	" + "Poeng:" + Math.round(score * 100.0) / 100.0);
 	
-    //Convert a JBox2D x coordinate to a JavaFX pixel x coordinate
+    /**
+     * Converts JBox2D metres to JavaFX pixels
+     * @param an objects meter for converting
+     * @return the pixel value of the metre
+     * @author Henrik
+	*/
     public static float meterToPixel(float meter) {
         float pixel = meter * PPM;
         return pixel;
     }
-
-
-    //Convert a JavaFX pixel y coordinate to a JBox2D y coordinate
+    
+    /**
+     * Converts JavaFX pixels to JBox2D metres
+     * @param an objects pixel for converting
+     * @return the metre value of the pixel
+     * @author Henrik
+	*/
     public static float pixelToMeter(float pixel) {
         float meter = pixel / PPM;
         return meter;
@@ -87,21 +82,19 @@ public class Main extends Application implements ContactListener {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-    	// Legg til eksisterende brukere
-    	File f = new File("scores.txt");
+    	// Adds previous users to the Vector-list for providing the top10
+    	File file = new File("scores.txt");
         try {
-            FileInputStream fis = new FileInputStream(f);
+            FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            
-            
-            Vector<Bruker> deserializeBruker = (Vector<Bruker>)ois.readObject();
+          
+            Vector<User> deserializeBruker = (Vector<User>)ois.readObject();
             ois.close();
             
-            Iterator<Bruker> iter = deserializeBruker.iterator();
+            Iterator<User> iter = deserializeBruker.iterator();
             while(iter.hasNext()){
-                Bruker s = iter.next();
-                B.add(new Bruker(s.getName(), s.getScore()));
-                antBrukere++;
+                User s = iter.next();
+                B.add(new User(s.getName(), s.getScore()));
             }
             
         } catch (FileNotFoundException ex) {
@@ -111,19 +104,16 @@ public class Main extends Application implements ContactListener {
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-    	
-    	
-    	
-    	
-    	world.setSleepingAllowed(true);
+              
+    	world.setSleepingAllowed(true); 
         primaryStage.setTitle("Pinball");
         primaryStage.setFullScreen(false);
         primaryStage.setResizable(false);
         Main.world.setContactListener(this);
-
         
         final Group root = new Group();
         final Scene scene = new Scene(root, WIDTH, HEIGHT, Color.BLACK);
+        // Adding balls
         final Ball[] balls = new Ball[] {
         	new Ball(599, 700),
         	new Ball(599, 730),
@@ -132,7 +122,7 @@ public class Main extends Application implements ContactListener {
         	new Ball(599, 800)
         };
 
-        // Banens utseende og hindere
+        // Building walls
         final Square squareLeft = new Square(1, 810, 1, 810, 0, Color.WHITE);
         final Square squareRight = new Square(610, 810, 1, 810, 0, Color.WHITE);
         final Square squareTop = new Square(610, 1, 610, 1, 0, Color.WHITE);
@@ -156,10 +146,10 @@ public class Main extends Application implements ContactListener {
         final Square bottom2 = new Square(484, 650, 110, 1, -20, Color.WHITE);
         final Square bottom3 = new Square(202, 750, 1, 62, 0, Color.WHITE);
         final Square bottom4 = new Square(382, 750, 1, 62, 0, Color.WHITE);
- 
-        //final Square topKickLane = new Square(573, 66, 20, 1, 45, Color.WHITE);
-        final Square topKickLane2 = new Square(660, 72, 200, 20, 43, Color.WHITE);
+
+        final Square topKickLane = new Square(660, 72, 200, 20, 43, Color.WHITE);
         
+        // Building obstacles
         final RoundThing r1 = new RoundThing(190, 200, 30, Color.RED);
         final RoundThing r2 = new RoundThing(390, 200, 30, Color.RED);
         final RoundThing r3 = new RoundThing(290, 300, 30, Color.RED);
@@ -167,16 +157,17 @@ public class Main extends Application implements ContactListener {
         //final RoundThing r5 = new RoundThing(300, 480, 20, Color.BLUE);
         final RoundThing r6 = new RoundThing(370, 430, 20, Color.BLUE);
         
+        // Building flipperr
         final Flipper[] flippers = {
     		new Flipper(true, 420, 632, 50, 8, 0, Color.GREEN),
     		new Flipper(false, 170, 632, 50, 8, 0, Color.GREEN),
         };
-  
+        
+        // Handling step and physics
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 world.step(2.0f / 60.f, 8, 3);
-                
-                
+
                 for(Ball ball : balls) {
                     Body body = (Body) ball.node.getUserData();
                     float xpos = meterToPixel(body.getPosition().x);
@@ -184,14 +175,14 @@ public class Main extends Application implements ContactListener {
                     ball.node.setLayoutX(xpos);
                     ball.node.setLayoutY(ypos);
                     
+                    // Getting rid of the ball when it falls below the flippers
                     if(ball.node.getLayoutY() > 740 && ball.node.getLayoutX() < 580) {
-	                	// Sett ballen utenfor skjermen
                     	body.setTransform(new Vec2(5000, 5000), 0);
 	                	ballInPlay = false;           
 	                } 
                 }  
                 
-                
+                // Handling flipper position
                 for(Flipper flipper : flippers) {
                 	Body body = (Body)flipper.node.getUserData();
                 	flipper.node.setRotate(-(body.getAngle() * RAD_TO_DEG));
@@ -201,49 +192,44 @@ public class Main extends Application implements ContactListener {
                     ((Rectangle)flipper.node).setX(xpos - flipper.sWidth);
                     ((Rectangle)flipper.node).setY(ypos - flipper.sHeight);
                 }
-                
+                // Flippers resting until activated
                 flippers[0].joint.enableMotor(false);
                 flippers[1].joint.enableMotor(false);
 
-                          
+                 // Closing the game and opens popup       
                 if(gameFinished == false && ballInPlay == false && ballsLeft == 0) {
                     b = false;
                 	primaryStage.close();
                 	NewStage();
                 	gameFinished = true;
                 } 
-                
+                // Adding to the score if a ball is moving
                 if(ballInPlay)
                 score+=0.01;
-      
                 
+                // Updating the score
                 if(b == true) {
                 	updateScore();
-                }
-                
-               
+                } 
             }
         };
-
-     
-
+        
         final Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
 
         Duration duration = Duration.seconds(1.0 / 60.0);
         KeyFrame frame = new KeyFrame(duration, ae, null, null);
 
-        
         timeline.getKeyFrames().add(frame);
         
-        t.setFont(new Font(20));
-        t.setFill(Color.WHITE);
-
+        text.setFont(new Font(20));
+        text.setFill(Color.WHITE);
         
+        // Adding the balls to the game
         for(Ball ball : balls) {
         	root.getChildren().add(ball.node);
         }
-
+        // Adding map elements
         root.getChildren().add(squareBottom.node);
         root.getChildren().add(squareTop.node);
         root.getChildren().add(squareRight.node);
@@ -253,11 +239,9 @@ public class Main extends Application implements ContactListener {
         root.getChildren().add(r2.node);
         root.getChildren().add(r3.node);
         root.getChildren().add(r4.node);
-        //root.getChildren().add(r5.node);
         root.getChildren().add(r6.node);
-        //root.getChildren().add(topKickLane.node);
-        root.getChildren().add(topKickLane2.node);
-        root.getChildren().add(t);
+        root.getChildren().add(topKickLane.node);
+        root.getChildren().add(text);
         root.getChildren().add(ballCatch1.node);
         root.getChildren().add(ballCatch2.node);
         root.getChildren().add(ballCatch3.node);
@@ -273,98 +257,100 @@ public class Main extends Application implements ContactListener {
         root.getChildren().add(bottom3.node);
         root.getChildren().add(bottom4.node);
         
+        // Adding the flippers to the game
         for(Flipper flipper : flippers) {
         	root.getChildren().add(flipper.node);
         }
 
-
-
         primaryStage.setScene(scene);
         primaryStage.show();
-
+        
+        // Adjusting the launch power and launching the ball
         scene.setOnKeyPressed(event -> {
-        	
             if (event.getCode() == KeyCode.SPACE) {
             	if(ballInPlay)
             		return;
-            	if(i < 5 && styrke == 10) {
-            		balls[i].addForce(new Vec2(0,80));
+            	if(count < 5 && power == 10) {
+            		balls[count].addForce(new Vec2(0,80));
             		ballInPlay = true;
             	}
-            	if(i < 5 && styrke == 9) {
-            		balls[i].addForce(new Vec2(0,75));
+            	if(count < 5 && power == 9) {
+            		balls[count].addForce(new Vec2(0,75));
             		ballInPlay = true;
             	}
-            	if(i < 5 && styrke == 8) {
-            		balls[i].addForce(new Vec2(0,70));
+            	if(count < 5 && power == 8) {
+            		balls[count].addForce(new Vec2(0,70));
             		ballInPlay = true;
             	}
-            	if(i < 5 && styrke == 7) {
-            		balls[i].addForce(new Vec2(0,65));
+            	if(count < 5 && power == 7) {
+            		balls[count].addForce(new Vec2(0,65));
             		ballInPlay = true;
             	}
-            	if(i < 5 && styrke == 6) {
-            		balls[i].addForce(new Vec2(0,60));
+            	if(count < 5 && power == 6) {
+            		balls[count].addForce(new Vec2(0,60));
             		ballInPlay = true;
             	}
-            	if(i < 5 && styrke == 5) {
-            		balls[i].addForce(new Vec2(0,55));
+            	if(count < 5 && power == 5) {
+            		balls[count].addForce(new Vec2(0,55));
             		ballInPlay = true;
             	}
-            	if(i < 5 && styrke == 4) {
-            		balls[i].addForce(new Vec2(0,50));
+            	if(count < 5 && power == 4) {
+            		balls[count].addForce(new Vec2(0,50));
             		ballInPlay = true;
             	}
-            	if(i < 5 && styrke == 3) {
-            		balls[i].addForce(new Vec2(0,45));
+            	if(count < 5 && power == 3) {
+            		balls[count].addForce(new Vec2(0,45));
             		ballInPlay = true;
             	}
-            	if(i < 5 && styrke == 2) {
-            		balls[i].addForce(new Vec2(0,40));
+            	if(count < 5 && power == 2) {
+            		balls[count].addForce(new Vec2(0,40));
             		ballInPlay = true;
             	}
-            	if(i < 5 && styrke == 1) {
-            		balls[i].addForce(new Vec2(0,35));
+            	if(count < 5 && power == 1) {
+            		balls[count].addForce(new Vec2(0,35));
             		ballInPlay = true;
             	}
-            	
-                
+
                 b = true;
                 ballsLeft--;
-                i++;
+                count++;
             }
        
-            
-            
+            // Moving the right flipper
             if (event.getCode() == KeyCode.RIGHT) {
                 flippers[0].joint.enableMotor(true);
                 flippers[0].joint.setMotorSpeed(10);
             }
-      
+            // Moving the left flipper
             if (event.getCode() == KeyCode.LEFT) {
                 flippers[1].joint.enableMotor(true);
                 flippers[1].joint.setMotorSpeed(-10);
             }
-            
+            // Quits the game
             if (event.getCode() == KeyCode.ESCAPE) {
             	ballsLeft = 0;
             }
-            if (event.getCode() == KeyCode.DIGIT1 && styrke > 1 ) {
-				styrke--;
+            // Adjusting launch power down
+            if (event.getCode() == KeyCode.DIGIT1 && power > 1 ) {
+				power--;
 				updateScore();
             }
-            if (event.getCode() == KeyCode.DIGIT2 && styrke <= 9) {
-				styrke++;
+            // Adjusting launch power up
+            if (event.getCode() == KeyCode.DIGIT2 && power <= 9) {
+				power++;
 				updateScore();
-            }
-            
+            }   
         });
      
-
-
         timeline.playFromStart();
              
     }
+    /**
+     * Registrates collisions
+     * @param a contact is made whenever something collides
+     * @return null
+     * @author Andreas
+	*/
     public void beginContact(Contact cp)throws NullPointerException{
         
     	Fixture f1 = cp.getFixtureA();
@@ -373,9 +359,7 @@ public class Main extends Application implements ContactListener {
     	float b1 = f1.getDensity();
     	float b2 = f2.getDensity();
     	
-//    	Object o1 = b1.getUserData();
-//    	Object o2 = b2.getUserData();
-//    		Funket ikke, userdata = null
+    	// Checking whether the ball hits a ball, wall or obstacle
     	if(b1 == 0.2f & b2 != 0.2f || b1 != 0.2f && b2 == 0.2f) {
     	if(b == true && b1 != 0.6f && b2 != 0.6f) {
     		score+=10;
@@ -385,37 +369,43 @@ public class Main extends Application implements ContactListener {
     }
 	Button button;
 	Button top10;
+	/**
+     * Creates a new scene when the game ends
+     * Saves the current user and displaying the top 10 list trough button-events
+     * @param null
+     * @return null
+     * @author Simen
+	*/
     void NewStage()  {
-    	
     		    Stage subStage = new Stage();
-    		    subStage.setTitle("Scoreboard navn");
+    		    subStage.setTitle("Scoreboard name");
     		            
     		    TextField nameInput = new TextField();
     		  
-    		    Text dittNavn = new Text("Din score ble: " + Math.round(score) + "\n" + "Skriv inn ditt navn");
-    		    button = new Button("Lagre score");
+    		    Text yourname = new Text("Your score: " + Math.round(score) + "\n" + "Enter your name");
+    		    button = new Button("Save score");
     		    top10 = new Button("Top 10");
     		    
     		    VBox layout = new VBox(10);
     		    layout.setPadding(new Insets(20,20,20,20));
-    		    layout.getChildren().addAll(dittNavn, nameInput, button, top10);
-    		    
+    		    layout.getChildren().addAll(yourname, nameInput, button, top10);
     		    
     		    Scene scene = new Scene(layout, 300, 200);
     		    subStage.setScene(scene);
     		    subStage.show();
     		    
+    		    // Adding the current user to a file
     		    button.setOnMouseClicked(e -> {
     		    	
-    		    	B.add(new Bruker(nameInput.getText(), score));
+    		    	B.add(new User(nameInput.getText(), score));
     		    	
-    		        File f = new File("scores.txt");
+    		        File file = new File("scores.txt");
     		        try {
-    		            FileOutputStream fos = new FileOutputStream(f);
+    		            FileOutputStream fos = new FileOutputStream(file);
     		            ObjectOutputStream oos = new ObjectOutputStream(fos);
     		            oos.writeObject(B);
     		            oos.close();
-    		            System.out.println("Lagring utført");
+    		            System.out.println("Saved");
     		            
     		        } catch (FileNotFoundException ex) {
     		            ex.printStackTrace();
@@ -425,22 +415,21 @@ public class Main extends Application implements ContactListener {
     		    
     		    	});
     		    
-    		 
+    		    // Displaying the top 10 list 
     		    top10.setOnMouseClicked(e -> {
     		    	int i = 0;
     		    	SortedMap<Double, String> top10Map = new TreeMap<>(Collections.reverseOrder());
-    		    	File f = new File("scores.txt");
+    		    	File file = new File("scores.txt");
     		        try {
-    		            FileInputStream fis = new FileInputStream(f);
+    		            FileInputStream fis = new FileInputStream(file);
     		            ObjectInputStream ois = new ObjectInputStream(fis);
-    		            
-    		            
-    		            Vector<Bruker> deserializeBruker = (Vector<Bruker>)ois.readObject();
+
+    		            Vector<User> deserializeBruker = (Vector<User>)ois.readObject();
     		            ois.close();
     		            
-    		            Iterator<Bruker> iter = deserializeBruker.iterator();
+    		            Iterator<User> iter = deserializeBruker.iterator();
     		            while(iter.hasNext()){
-    		                Bruker s = iter.next();
+    		                User s = iter.next();
     		                top10Map.put(s.getScore(), s.getName());
     		            }
     		            Set set = top10Map.entrySet(); 
@@ -465,23 +454,23 @@ public class Main extends Application implements ContactListener {
 					}
     		    	});
     }
+    /**
+     * Updating and Displaying the score
+     * @param null
+     * @return null
+     * @author Andreas
+	*/
     protected void updateScore() {
-    	t.setText("Baller:" + ballsLeft + "   " + "Styrke : " + styrke + "	" + "Poeng:" + Math.round(score * 100.0) / 100.0);
+    	text.setText("Balls:" + ballsLeft + "   " + "Power : " + power + "	" + "Points:" + Math.round(score * 100.0) / 100.0);
 	}
 
 	public static void main(String[] args) {
         launch(args);
     }
-
-
 	@Override
 	public void endContact(Contact cp) {}
-
-
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {}
-
-
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {}
 }
