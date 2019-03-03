@@ -120,10 +120,7 @@ public class Main extends Application implements ContactListener {
         primaryStage.setFullScreen(false);
         primaryStage.setResizable(false);
         Main.world.setContactListener(this);
-        
-        
-        final int ballStartX = 599;
-        final int ballStartY = 800;
+
         
         final Group root = new Group();
         final Scene scene = new Scene(root, WIDTH, HEIGHT, Color.BLACK);
@@ -135,27 +132,40 @@ public class Main extends Application implements ContactListener {
         	new Ball(599, 800)
         };
 
-        
+        // Banens utseende og hindere
         final Square squareLeft = new Square(1, 810, 1, 810, 0, Color.WHITE);
         final Square squareRight = new Square(610, 810, 1, 810, 0, Color.WHITE);
         final Square squareTop = new Square(610, 1, 610, 1, 0, Color.WHITE);
         final Square squareBottom = new Square(610, 810, 610, 1, 0, Color.WHITE);
         final Square kickLane = new Square(587, 810, 1, 710, 0, Color.WHITE);
-     
-        final Square ballCatch1 = new Square(100, 650, 110, 1, 20, Color.WHITE);
-        final Square ballCatch2 = new Square(484, 650, 110, 1, -20, Color.WHITE);
-        final Square ballCatch3 = new Square(202, 750, 1, 62, 0, Color.WHITE);
-        final Square ballCatch4 = new Square(382, 750, 1, 62, 0, Color.WHITE);
         
+        final Square ballCatch1 = new Square(40, 520, 1, 60, 0, Color.WHITE);
+        final Square ballCatch2 = new Square(548, 520, 1, 60, 0, Color.WHITE);
+        final Square ballCatch3 = new Square(102, 602, 65, 1, 20, Color.WHITE);
+        final Square ballCatch4 = new Square(486, 602, 65, 1, -20, Color.WHITE);
         
+        final Square ballCatch5 = new Square(72, 506, 1, 45, 0, Color.WHITE);
+        final Square ballCatch6 = new Square(104, 563, 35, 1, 20, Color.WHITE);
+        final Square ballCatch7 = new Square(104, 517, 1, 65, -29, Color.WHITE);
+        
+        final Square ballCatch8 = new Square(516, 506, 1, 45, 0, Color.WHITE);
+        final Square ballCatch9 = new Square(484, 563, 35, 1, -20, Color.WHITE);
+        final Square ballCatch10 = new Square(484, 517, 1, 65, 29, Color.WHITE);
+        
+        final Square bottom = new Square(100, 650, 110, 1, 20, Color.WHITE);
+        final Square bottom2 = new Square(484, 650, 110, 1, -20, Color.WHITE);
+        final Square bottom3 = new Square(202, 750, 1, 62, 0, Color.WHITE);
+        final Square bottom4 = new Square(382, 750, 1, 62, 0, Color.WHITE);
+ 
+        final Square topKickLane = new Square(573, 86, 20, 1, 45, Color.WHITE);
         final Square topKickLane2 = new Square(660, 72, 200, 20, 43, Color.WHITE);
         
-        final RoundThing r1 = new RoundThing(180, 175, 30, Color.RED);
-        final RoundThing r2 = new RoundThing(400, 175, 30, Color.RED);
+        final RoundThing r1 = new RoundThing(190, 200, 30, Color.RED);
+        final RoundThing r2 = new RoundThing(390, 200, 30, Color.RED);
         final RoundThing r3 = new RoundThing(290, 300, 30, Color.RED);
         
         final Flipper[] flippers = {
-    		new Flipper(100, 300, 50, 5, 0, Color.WHITE),
+    		new Flipper(100, 300, 50, 5, 0, Color.GREEN),
         		
         };
         
@@ -229,12 +239,23 @@ public class Main extends Application implements ContactListener {
         root.getChildren().add(r1.node);
         root.getChildren().add(r2.node);
         root.getChildren().add(r3.node);
+        root.getChildren().add(topKickLane.node);
         root.getChildren().add(topKickLane2.node);
         root.getChildren().add(t);
         root.getChildren().add(ballCatch1.node);
         root.getChildren().add(ballCatch2.node);
         root.getChildren().add(ballCatch3.node);
         root.getChildren().add(ballCatch4.node);
+        root.getChildren().add(ballCatch5.node);
+        root.getChildren().add(ballCatch6.node);
+        root.getChildren().add(ballCatch7.node);
+        root.getChildren().add(ballCatch8.node);
+        root.getChildren().add(ballCatch9.node);
+        root.getChildren().add(ballCatch10.node);
+        root.getChildren().add(bottom.node);
+        root.getChildren().add(bottom2.node);
+        root.getChildren().add(bottom3.node);
+        root.getChildren().add(bottom4.node);
 
 
         primaryStage.setScene(scene);
