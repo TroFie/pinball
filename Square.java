@@ -3,9 +3,6 @@ package sample;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.RectangleBuilder;
-import javafx.scene.transform.Rotate;
-
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -15,13 +12,7 @@ import org.jbox2d.dynamics.FixtureDef;
 
 
 public class Square {
-    //JavaFX UI for square
-    /**
-     * 1 define body 2 create body 3 create shape 4 create fixture 5 attach
-     * shape to body
-     */
-	
-	
+   
     public Node node;
     private float posX;
     private float posY;
@@ -29,11 +20,14 @@ public class Square {
     private float sHeight;
     private float angle;
     private static Color color;
-//    private BodyType bodyType;
-
     private static Rectangle rc;
-//    private float angle;
-//    private BodyDef bd;
+
+    /**
+     * Creates and initializes the square
+     * @param Y and X positions, width and height, angle and color
+     * @return Null
+     * @author Henrik
+    */
 
     public Square(float posX, float posY, float sWidth, float sHeight, float angle, Color color) {
         this.posX = posX;
@@ -45,9 +39,14 @@ public class Square {
 //        this.bodyType = bodyType;
         node = create();
     }
-
+    
+    /**
+     * Initializes a square, and sets up the JavaFX-graphic. Sets up the physics object
+     * @param Null
+     * @return Returns a square with the specified fixture, body and definition
+     * @author Henrik
+	*/
     public Node create() {
-        //UI for square in JavaFX
         rc = new Rectangle();
         rc.setX(posX - sWidth);
         rc.setY(posY - sHeight);
@@ -56,33 +55,24 @@ public class Square {
         rc.setFill(color);
         rc.setRotate((double)angle);
 
-
-        //Create an JBox2D body definition for square.
+        // Create a body definition for JBox2D
         BodyDef bd = new BodyDef();
         bd.type = BodyType.STATIC;
         bd.position.set(Main.pixelToMeter(posX), Main.pixelToMeter(-posY));
         
-       
-
         PolygonShape ps = new PolygonShape();
-
         ps.setAsBox(Main.pixelToMeter(sWidth), Main.pixelToMeter(sHeight), new Vec2(0.0f, 0.0f),  ((-angle) * Main.DEG_TO_RAD));
 
-        //fixture for polygon, in this case square
+        // Set fixture
         FixtureDef fd = new FixtureDef();
         fd.shape = ps;
         fd.density = 0.6f;
         fd.friction = 0.3f;
         fd.isSensor = false;
         
-
+        // Creating the body
         Body body = Main.world.createBody(bd);
         body.createFixture(fd);
-        
-        
-        //body.setTransform(body.getPosition(), -(angle * DEG_TO_RAD));
-        
-        
         rc.setUserData(body);
         return rc;
     }
