@@ -63,14 +63,14 @@ public class Main extends Application implements ContactListener {
     public int ballsLeft = 5;
     public double score = 0;
     public String name;
-    private boolean b = false;
-    private boolean ballInPlay = false;
-    private boolean gameFinished = false;
-    private int i = 0;
-    Vector<Bruker> B = new Vector<Bruker>();
-    public int antBrukere = 0;
-    private int styrke = 3;
-    private Text t = new Text(10, 50, "Baller:" + ballsLeft + "   " + "Styrke : " + styrke + "	" + "Poeng:" + Math.round(score * 100.0) / 100.0);
+	private boolean b = false;
+	private boolean ballInPlay = false;
+	private boolean gameFinished = false;
+	private int i = 0;
+	Vector<Bruker> B = new Vector<Bruker>();
+	public int antBrukere = 0;
+	private int styrke = 3;
+	private Text t = new Text(10, 50, "Baller:" + ballsLeft + "   " + "Styrke : " + styrke + "	" + "Poeng:" + Math.round(score * 100.0) / 100.0);
 	
     //Convert a JBox2D x coordinate to a JavaFX pixel x coordinate
     public static float meterToPixel(float meter) {
@@ -137,7 +137,7 @@ public class Main extends Application implements ContactListener {
         final Square squareRight = new Square(610, 810, 1, 810, 0, Color.WHITE);
         final Square squareTop = new Square(610, 1, 610, 1, 0, Color.WHITE);
         final Square squareBottom = new Square(610, 810, 610, 1, 0, Color.WHITE);
-        final Square kickLane = new Square(587, 810, 1, 710, 0, Color.WHITE);
+        final Square kickLane = new Square(587, 810, 1, 730, 0, Color.WHITE);
         
         final Square ballCatch1 = new Square(40, 520, 1, 60, 0, Color.WHITE);
         final Square ballCatch2 = new Square(548, 520, 1, 60, 0, Color.WHITE);
@@ -157,12 +157,15 @@ public class Main extends Application implements ContactListener {
         final Square bottom3 = new Square(202, 750, 1, 62, 0, Color.WHITE);
         final Square bottom4 = new Square(382, 750, 1, 62, 0, Color.WHITE);
  
-        final Square topKickLane = new Square(573, 86, 20, 1, 45, Color.WHITE);
+        //final Square topKickLane = new Square(573, 66, 20, 1, 45, Color.WHITE);
         final Square topKickLane2 = new Square(660, 72, 200, 20, 43, Color.WHITE);
         
         final RoundThing r1 = new RoundThing(190, 200, 30, Color.RED);
         final RoundThing r2 = new RoundThing(390, 200, 30, Color.RED);
         final RoundThing r3 = new RoundThing(290, 300, 30, Color.RED);
+        final RoundThing r4 = new RoundThing(230, 480, 20, Color.BLUE);
+        final RoundThing r5 = new RoundThing(300, 500, 20, Color.BLUE);
+        final RoundThing r6 = new RoundThing(370, 480, 20, Color.BLUE);
         
         final Flipper[] flippers = {
     		new Flipper(100, 300, 50, 5, 0, Color.GREEN),
@@ -235,7 +238,10 @@ public class Main extends Application implements ContactListener {
         root.getChildren().add(r1.node);
         root.getChildren().add(r2.node);
         root.getChildren().add(r3.node);
-        root.getChildren().add(topKickLane.node);
+        root.getChildren().add(r4.node);
+        root.getChildren().add(r5.node);
+        root.getChildren().add(r6.node);
+        //root.getChildren().add(topKickLane.node);
         root.getChildren().add(topKickLane2.node);
         root.getChildren().add(t);
         root.getChildren().add(ballCatch1.node);
