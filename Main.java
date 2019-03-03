@@ -63,14 +63,14 @@ public class Main extends Application implements ContactListener {
     public int ballsLeft = 5;
     public double score = 0;
     public String name;
-	private Text t = new Text(10, 50, "Baller:" + ballsLeft + "   " + "Poeng:" + score);
-	private boolean b = false;
-	private boolean ballInPlay = false;
-	private boolean gameFinished = false;
-	private int i = 0;
-	Vector<Bruker> B = new Vector<Bruker>();
-	public int antBrukere = 0;
-	
+    private boolean b = false;
+    private boolean ballInPlay = false;
+    private boolean gameFinished = false;
+    private int i = 0;
+    Vector<Bruker> B = new Vector<Bruker>();
+    public int antBrukere = 0;
+    private int styrke = 3;
+    private Text t = new Text(10, 50, "Baller:" + ballsLeft + "   " + "Styrke : " + styrke + "	" + "Poeng:" + Math.round(score * 100.0) / 100.0);
 	
     //Convert a JBox2D x coordinate to a JavaFX pixel x coordinate
     public static float meterToPixel(float meter) {
@@ -168,11 +168,7 @@ public class Main extends Application implements ContactListener {
     		new Flipper(100, 300, 50, 5, 0, Color.GREEN),
         		
         };
-        
-        
-        
-        
-        
+  
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 world.step(2.0f / 60.f, 8, 3);
@@ -266,9 +262,44 @@ public class Main extends Application implements ContactListener {
             if (event.getCode() == KeyCode.SPACE) {
             	if(ballInPlay)
             		return;
-            	
-            	if(i < 5) {
+            	if(i < 5 && styrke == 10) {
+            		balls[i].addForce(new Vec2(0,80));
+            		ballInPlay = true;
+            	}
+            	if(i < 5 && styrke == 9) {
+            		balls[i].addForce(new Vec2(0,75));
+            		ballInPlay = true;
+            	}
+            	if(i < 5 && styrke == 8) {
+            		balls[i].addForce(new Vec2(0,70));
+            		ballInPlay = true;
+            	}
+            	if(i < 5 && styrke == 7) {
+            		balls[i].addForce(new Vec2(0,65));
+            		ballInPlay = true;
+            	}
+            	if(i < 5 && styrke == 6) {
+            		balls[i].addForce(new Vec2(0,60));
+            		ballInPlay = true;
+            	}
+            	if(i < 5 && styrke == 5) {
+            		balls[i].addForce(new Vec2(0,55));
+            		ballInPlay = true;
+            	}
+            	if(i < 5 && styrke == 4) {
             		balls[i].addForce(new Vec2(0,50));
+            		ballInPlay = true;
+            	}
+            	if(i < 5 && styrke == 3) {
+            		balls[i].addForce(new Vec2(0,45));
+            		ballInPlay = true;
+            	}
+            	if(i < 5 && styrke == 2) {
+            		balls[i].addForce(new Vec2(0,40));
+            		ballInPlay = true;
+            	}
+            	if(i < 5 && styrke == 1) {
+            		balls[i].addForce(new Vec2(0,35));
             		ballInPlay = true;
             	}
             	
@@ -284,6 +315,14 @@ public class Main extends Application implements ContactListener {
             
             if (event.getCode() == KeyCode.ESCAPE) {
             	ballsLeft = 0;
+            }
+            if (event.getCode() == KeyCode.DIGIT1 && styrke > 1 ) {
+				styrke--;
+				updateScore();
+            }
+            if (event.getCode() == KeyCode.DIGIT2 && styrke <= 9) {
+				styrke++;
+				updateScore();
             }
             
         });
@@ -343,7 +382,7 @@ public class Main extends Application implements ContactListener {
     		            ObjectOutputStream oos = new ObjectOutputStream(fos);
     		            oos.writeObject(B);
     		            oos.close();
-    		            System.out.println("data write successfully");
+    		            System.out.println("Lagring utført");
     		            
     		        } catch (FileNotFoundException ex) {
     		            ex.printStackTrace();
@@ -389,12 +428,12 @@ public class Main extends Application implements ContactListener {
     		            ex.printStackTrace();
     		        }
     		        catch (NoSuchElementException e2) {
-						System.out.println("End of list");
+						System.out.println("Slutt på liste..");
 					}
     		    	});
     }
     protected void updateScore() {
-    	t.setText("Baller:" + ballsLeft + "   " + "Poeng:" + Math.round(score * 100.0) / 100.0);
+    	t.setText("Baller:" + ballsLeft + "   " + "Styrke : " + styrke + "	" + "Poeng:" + Math.round(score * 100.0) / 100.0);
 	}
 
 	public static void main(String[] args) {
