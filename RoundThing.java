@@ -16,10 +16,10 @@ public class RoundThing {
     private float posY;
     private float sRadius;
     private Color color;
-
     private static Circle circle;
-    /**
-     * ???
+	
+	   /**
+     * Creates and initializes the circle
      * @param Y and X positions, radius and color
      * @return Null
      * @author Henrik
@@ -32,7 +32,12 @@ public class RoundThing {
         node = create();
     }
 
-    // Layout for circle
+     /**
+     * Initializes the ball, and sets up the JavaFX-graphic. Sets up the physics object
+     * @param Null
+     * @return Returns the circle with the specified fixture, body and definition
+     * @author Henrik
+	*/
     public Node create() {
         circle = new Circle();
         circle.setLayoutX(posX);
