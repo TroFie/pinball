@@ -10,8 +10,10 @@ import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 
-// The method creates a ball, using JavaFX and CircleShape from JBox2D
-
+/* @author Henrik
+ * 
+ * The method creates a ball, using JavaFX and CircleShape from JBox2D
+ */
 public class Ball {
 
     public static final int BALL_SIZE = 10;
@@ -23,14 +25,14 @@ public class Ball {
     private Body body;
     private Color color;
 
-    
+    // Creates and initializes the player ball
     public Ball(float posX, float posY) {
     	
         this(posX, posY, BALL_SIZE, BodyType.DYNAMIC, Color.GRAY);
-        this.posX = posX;
-        this.posY = posY;
     }
 
+/* @param Y and X positions, radius and color
+ */
     public Ball(float posX, float posY, int radius, BodyType bodyType, Color color) {
     	
         this.posX = posX;
@@ -40,8 +42,12 @@ public class Ball {
         this.color = color;
         node = create();
     }
-
      
+/* Initializes the ball, and sets up the JavaFX-graphic. Sets up the physics object
+ * 
+ * @param Returns the ball with the specified fixture, body and definition
+ */ 
+   
     private Node create() {
       
         Circle ball = new Circle();
@@ -71,8 +77,7 @@ public class Ball {
         return ball;
     }
 
-    // Metode som får ballen til å fly oppover. Brukes til utskytning.
-    
+    // Makes the ball fly
     public void addForce(Vec2 force) {
         body.applyForce(force, body.getWorldCenter());
     }
