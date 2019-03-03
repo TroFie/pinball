@@ -19,7 +19,26 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Vector;
+
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
@@ -49,7 +68,8 @@ public class Main extends Application implements ContactListener {
 	private boolean ballInPlay = false;
 	private boolean gameFinished = false;
 	private int i = 0;
-	
+	Vector<Bruker> B = new Vector<Bruker>();
+	public int antBrukere = 0;
 	
 	
     //Convert a JBox2D x coordinate to a JavaFX pixel x coordinate
@@ -67,6 +87,34 @@ public class Main extends Application implements ContactListener {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+    	// Legg til eksisterende brukere
+    	File f = new File("scores.txt");
+        try {
+            FileInputStream fis = new FileInputStream(f);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            
+            
+            Vector<Bruker> deserializeBruker = (Vector<Bruker>)ois.readObject();
+            ois.close();
+            
+            Iterator<Bruker> iter = deserializeBruker.iterator();
+            while(iter.hasNext()){
+                Bruker s = iter.next();
+                B.add(new Bruker(s.getName(), s.getScore()));
+                antBrukere++;
+            }
+            
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    	
+    	
+    	
+    	
     	world.setSleepingAllowed(true);
         primaryStage.setTitle("Pinball");
         primaryStage.setFullScreen(false);
@@ -142,7 +190,7 @@ public class Main extends Application implements ContactListener {
                 	gameFinished = true;
                 } 
                 
-
+                if(ballInPlay)
                 score+=0.01;
       
                 
@@ -213,6 +261,10 @@ public class Main extends Application implements ContactListener {
       
             if (event.getCode() == KeyCode.RIGHT) {}
             
+            if (event.getCode() == KeyCode.ESCAPE) {
+            	ballsLeft = 0;
+            }
+            
         });
      
 
@@ -239,6 +291,7 @@ public class Main extends Application implements ContactListener {
     	}
     }
 	Button button;
+	Button top10;
     void NewStage()  {
     	
     		    Stage subStage = new Stage();
@@ -248,17 +301,77 @@ public class Main extends Application implements ContactListener {
     		  
     		    Text dittNavn = new Text("Din score ble: " + Math.round(score) + "\n" + "Skriv inn ditt navn");
     		    button = new Button("Lagre score");
+    		    top10 = new Button("Top 10");
     		    
     		    VBox layout = new VBox(10);
     		    layout.setPadding(new Insets(20,20,20,20));
-    		    layout.getChildren().addAll(dittNavn, nameInput, button);
+    		    layout.getChildren().addAll(dittNavn, nameInput, button, top10);
     		    
     		    
     		    Scene scene = new Scene(layout, 300, 200);
     		    subStage.setScene(scene);
     		    subStage.show();
+    		    
+    		    button.setOnMouseClicked(e -> {
+    		    	
+    		    	B.add(new Bruker(nameInput.getText(), score));
+    		    	
+    		        File f = new File("scores.txt");
+    		        try {
+    		            FileOutputStream fos = new FileOutputStream(f);
+    		            ObjectOutputStream oos = new ObjectOutputStream(fos);
+    		            oos.writeObject(B);
+    		            oos.close();
+    		            System.out.println("data write successfully");
+    		            
+    		        } catch (FileNotFoundException ex) {
+    		            ex.printStackTrace();
+    		        } catch (IOException ex) {
+    		            ex.printStackTrace();
+    		        }
+    		    
+    		    	});
+    		    
+    		 
+    		    top10.setOnMouseClicked(e -> {
+    		    	int i = 0;
+    		    	SortedMap<Double, String> top10Map = new TreeMap<>(Collections.reverseOrder());
+    		    	File f = new File("scores.txt");
+    		        try {
+    		            FileInputStream fis = new FileInputStream(f);
+    		            ObjectInputStream ois = new ObjectInputStream(fis);
+    		            
+    		            
+    		            Vector<Bruker> deserializeBruker = (Vector<Bruker>)ois.readObject();
+    		            ois.close();
+    		            
+    		            Iterator<Bruker> iter = deserializeBruker.iterator();
+    		            while(iter.hasNext()){
+    		                Bruker s = iter.next();
+    		                top10Map.put(s.getScore(), s.getName());
+    		            }
+    		            Set set = top10Map.entrySet(); 
+    		            Iterator it = set.iterator();
+    		            
+    		            	while(i<10) {
+    		                SortedMap.Entry me = (SortedMap.Entry)it.next(); 
+    		                System.out.print(me.getKey() + ": "); 
+    		                System.out.println(me.getValue()); 
+    		                i++;
+    		            	}
+    		    
+    		        } catch (FileNotFoundException ex) {
+    		            ex.printStackTrace();
+    		        } catch (IOException ex) {
+    		            ex.printStackTrace();
+    		        } catch (ClassNotFoundException ex) {
+    		            ex.printStackTrace();
+    		        }
+    		        catch (NoSuchElementException e2) {
+						System.out.println("End of list");
+					}
+    		    	});
     }
-    
     protected void updateScore() {
     	t.setText("Baller:" + ballsLeft + "   " + "Poeng:" + Math.round(score * 100.0) / 100.0);
 	}
