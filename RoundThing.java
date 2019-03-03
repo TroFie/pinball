@@ -19,7 +19,7 @@ public class RoundThing {
     private static Circle circle;
 	
 	   /**
-     * Creates and initializes the circle
+     * Constructs and initializes the circle
      * @param Y and X positions, radius and color
      * @return Null
      * @author Henrik
