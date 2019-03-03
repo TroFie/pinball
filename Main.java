@@ -163,13 +163,13 @@ public class Main extends Application implements ContactListener {
         final RoundThing r1 = new RoundThing(190, 200, 30, Color.RED);
         final RoundThing r2 = new RoundThing(390, 200, 30, Color.RED);
         final RoundThing r3 = new RoundThing(290, 300, 30, Color.RED);
-        final RoundThing r4 = new RoundThing(230, 480, 20, Color.BLUE);
-        final RoundThing r5 = new RoundThing(300, 500, 20, Color.BLUE);
-        final RoundThing r6 = new RoundThing(370, 480, 20, Color.BLUE);
+        final RoundThing r4 = new RoundThing(230, 430, 20, Color.BLUE);
+        //final RoundThing r5 = new RoundThing(300, 480, 20, Color.BLUE);
+        final RoundThing r6 = new RoundThing(370, 430, 20, Color.BLUE);
         
         final Flipper[] flippers = {
-    		new Flipper(true, 420, 630, 50, 5, 0, Color.GREEN),
-    		new Flipper(false, 170, 630, 50, 5, 0, Color.GREEN),
+    		new Flipper(true, 420, 632, 50, 8, 0, Color.GREEN),
+    		new Flipper(false, 170, 632, 50, 8, 0, Color.GREEN),
         };
   
         EventHandler<ActionEvent> ae = new EventHandler<ActionEvent>() {
@@ -253,7 +253,7 @@ public class Main extends Application implements ContactListener {
         root.getChildren().add(r2.node);
         root.getChildren().add(r3.node);
         root.getChildren().add(r4.node);
-        root.getChildren().add(r5.node);
+        //root.getChildren().add(r5.node);
         root.getChildren().add(r6.node);
         //root.getChildren().add(topKickLane.node);
         root.getChildren().add(topKickLane2.node);
@@ -338,12 +338,12 @@ public class Main extends Application implements ContactListener {
             
             if (event.getCode() == KeyCode.RIGHT) {
                 flippers[0].joint.enableMotor(true);
-                flippers[0].joint.setMotorSpeed(50);
+                flippers[0].joint.setMotorSpeed(10);
             }
       
             if (event.getCode() == KeyCode.LEFT) {
                 flippers[1].joint.enableMotor(true);
-                flippers[1].joint.setMotorSpeed(-50);
+                flippers[1].joint.setMotorSpeed(-10);
             }
             
             if (event.getCode() == KeyCode.ESCAPE) {
