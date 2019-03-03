@@ -10,7 +10,7 @@ import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 
-// Metoden lager en ball ved å bruke JavaFX og CircleShape fra JBox2D
+// The method creates a ball, using JavaFX and CircleShape from JBox2D
 
 public class Ball {
 
@@ -23,6 +23,7 @@ public class Ball {
     private Body body;
     private Color color;
 
+    
     public Ball(float posX, float posY) {
     	
         this(posX, posY, BALL_SIZE, BodyType.DYNAMIC, Color.GRAY);

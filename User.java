@@ -2,15 +2,15 @@ package sample;
 
 import java.io.Serializable;
 
-public class Bruker implements Serializable{
+public class User implements Serializable{
     String name;
     Double score;
 
-    Bruker(){
+    User(){
     
     }
     
-    Bruker(String name, Double score){
+    User(String name, Double score){
         setName(name);
         setScore(score);
         
